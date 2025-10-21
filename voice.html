@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAPR Voice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #131417;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+        }
+
+        .wordmark {
+            font-size: 96px;
+            font-weight: 500;
+            color: white;
+            letter-spacing: -0.02em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
+            text-transform: lowercase;
+            line-height: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        #status {
+            font-size: 24px;
+            margin: 30px 0;
+            min-height: 30px;
+            transition: all 0.3s ease;
+        }
+
+        #status.idle { color: #0161E0; }
+        #status.listening { color: #00FEFE; }
+        #status.thinking { color: #0CCDFF; }
+        #status.speaking { color: #0161E0; }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin: 30px auto;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-button {
+            background: linear-gradient(135deg, #0161E0, #0CCDFF);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(1, 97, 224, 0.4);
+            flex-shrink: 0;
+        }
+
+        .audio-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 254, 254, 0.6);
+        }
+
+        .audio-button.active {
+            background: #00FEFE;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #transcript {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        #transcript.hidden {
+            display: none;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .user {
+            background: rgba(1, 97, 224, 0.2);
+            border-left: 3px solid #0161E0;
+        }
+
+        .assistant {
+            background: rgba(0, 254, 254, 0.1);
+            border-left: 3px solid #00FEFE;
+        }
+
+        .error {
+            color: #ff4444;
+            margin-top: 20px;
+        }
+
+        .info {
+            color: #0CCDFF;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        /* Search Constellation Canvas */
+        #constellation-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: auto;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            pointer-events: none; /* Allow clicks to pass through to canvas */
+        }
+
+        .container > * {
+            pointer-events: auto; /* Re-enable clicks for UI elements */
+        }
+
+        /* Search Detail Modal */
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 30, 35, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            width: 700px;
+            max-width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .search-modal.active {
+            display: block;
+        }
+
+        .modal-header {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-query {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: white;
+            font-style: italic;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #00FEFE;
+        }
+
+        .modal-latency {
+            font-size: 24px;
+            color: #00FEFE;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .modal-memories {
+            margin-top: 16px;
+        }
+
+        .modal-memory-item {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-memory-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .memory-score {
+            color: #0CCDFF;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .memory-content {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .memory-content em {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: white;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="constellation-canvas"></canvas>
+
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <div class="search-modal" id="searchModal">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div class="modal-header">Search Query</div>
+        <div class="modal-query" id="modalQuery"></div>
+        <div class="modal-latency" id="modalLatency"></div>
+        <div class="modal-header">Top Memories</div>
+        <div class="modal-memories" id="modalMemories"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="/logo.svg" alt="PAPR" class="logo">
+            <div class="wordmark">PAPR</div>
+        </div>
+
+        <div class="input-container">
+            <button id="audioBtn" class="audio-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 15C13.66 15 15 13.66 15 12V6C15 4.34 13.66 3 12 3C10.34 3 9 4.34 9 6V12C9 13.66 10.34 15 12 15Z" fill="white"/>
+                    <path d="M17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12H5C5 15.53 7.61 18.43 11 18.92V21H13V18.92C16.39 18.43 19 15.53 19 12H17Z" fill="white"/>
+                </svg>
+            </button>
+            <input type="text" id="textInput" placeholder="Ask about your memories...">
+        </div>
+
+        <div id="status" class="idle">Ready</div>
+
+        <div id="transcript" class="hidden"></div>
+
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const PAPR_MEMORY_URL = '/api/search';  // ON-DEVICE CoreML search! (relative URL works with ngrok!)
+        const WS_URL = 'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17';
+
+        // State
+        let ws = null;
+        let audioContext = null;
+        let mediaStream = null;
+        let isConnected = false;
+        let OPENAI_API_KEY = null;
+        let PAPR_API_KEY = null;
+        let nextAudioTime = 0;
+
+        // ========== SEARCH CONSTELLATION SYSTEM ==========
+        const AIRBNB_COLORS = ['#FF5A5F', '#00A699', '#FC642D', '#484848', '#767676', '#FFB400'];
+        const MAX_PARTICLES = 30;
+
+        class Particle {
+            constructor(x, y, color, searchData) {
+                this.x = x;
+                this.y = y;
+                this.baseX = x;
+                this.baseY = y;
+                this.color = color;
+                this.searchData = searchData;
+                this.size = Math.max(8, Math.min(16, searchData.memories.length / 2)); // Larger particles
+                this.opacity = 0;
+                this.targetOpacity = 0.9;
+                this.vx = (Math.random() - 0.5) * 0.3;
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.age = 0;
+                this.hovering = false;
+                this.glowIntensity = 0;
+            }
+
+            update() {
+                // Gentle drift
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Subtle return to base position
+                this.x += (this.baseX - this.x) * 0.02;
+                this.y += (this.baseY - this.y) * 0.02;
+
+                // Fade in
+                if (this.opacity < this.targetOpacity) {
+                    this.opacity += 0.05;
+                }
+
+                // Animate glow on hover
+                if (this.hovering) {
+                    this.glowIntensity = Math.min(1, this.glowIntensity + 0.1);
+                } else {
+                    this.glowIntensity = Math.max(0, this.glowIntensity - 0.1);
+                }
+
+                this.age++;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+
+                // Hover glow (extra strong when hovering)
+                if (this.glowIntensity > 0) {
+                    const hoverGradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 4);
+                    hoverGradient.addColorStop(0, this.color);
+                    hoverGradient.addColorStop(0.5, this.color);
+                    hoverGradient.addColorStop(1, 'transparent');
+                    ctx.globalAlpha = this.opacity * this.glowIntensity * 0.6;
+                    ctx.fillStyle = hoverGradient;
+                    ctx.fillRect(this.x - this.size * 4, this.y - this.size * 4, this.size * 8, this.size * 8);
+                    ctx.globalAlpha = this.opacity;
+                }
+
+                // Outer glow
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
+                gradient.addColorStop(0, this.color);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(this.x - this.size * 2, this.y - this.size * 2, this.size * 4, this.size * 4);
+
+                // Core particle (slightly larger on hover)
+                const coreSize = this.size * (1 + this.glowIntensity * 0.3);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, coreSize, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            contains(x, y) {
+                const dx = x - this.x;
+                const dy = y - this.y;
+                return Math.sqrt(dx * dx + dy * dy) < this.size * 3; // Larger click area
+            }
+        }
+
+        class Constellation {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                this.animate();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.centerX = this.canvas.width / 2;
+                this.centerY = this.canvas.height / 2;
+            }
+
+            addSearch(query, latencyMs, memories) {
+                // Remove oldest if at limit
+                if (this.particles.length >= MAX_PARTICLES) {
+                    this.particles.shift();
+                }
+
+                // Random position around center (further out to avoid UI overlap)
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 250 + Math.random() * 250; // 250-500px from center
+                const x = this.centerX + Math.cos(angle) * distance;
+                const y = this.centerY + Math.sin(angle) * distance;
+
+                // Random Airbnb color
+                const color = AIRBNB_COLORS[Math.floor(Math.random() * AIRBNB_COLORS.length)];
+
+                const searchData = {
+                    query,
+                    latencyMs,
+                    memories: memories.slice(0, 5), // Top 5
+                    timestamp: new Date()
+                };
+
+                this.particles.push(new Particle(x, y, color, searchData));
+            }
+
+            handleMouseMove(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                this.mouseX = e.clientX - rect.left;
+                this.mouseY = e.clientY - rect.top;
+
+                // Update hover state for all particles
+                let anyHovering = false;
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    if (this.particles[i].contains(this.mouseX, this.mouseY)) {
+                        this.particles[i].hovering = true;
+                        anyHovering = true;
+                    } else {
+                        this.particles[i].hovering = false;
+                    }
+                }
+
+                // Change cursor if hovering over any particle
+                this.canvas.style.cursor = anyHovering ? 'pointer' : 'default';
+            }
+
+            handleClick(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Check if clicked on a particle (reverse order to get top particle)
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    if (this.particles[i].contains(x, y)) {
+                        this.showSearchDetail(this.particles[i].searchData);
+                        return;
+                    }
+                }
+            }
+
+            showSearchDetail(searchData) {
+                document.getElementById('modalQuery').textContent = `"${searchData.query}"`;
+                const latency = Math.round(searchData.latencyMs);
+                document.getElementById('modalLatency').textContent = `⚡ ${latency}ms`;
+
+                const memoriesHtml = searchData.memories.map((m, index) => {
+                    // Get first 4-5 sentences (approximately 400 chars)
+                    let content = m.content;
+                    let preview = '';
+
+                    // Handle missing or 'None' content
+                    if (!content || content === 'None' || content.trim() === '') {
+                        preview = '<em>(No content available for this memory)</em>';
+                    } else {
+                        // Split by sentences
+                        const sentences = content.split(/[.!?]\s+/);
+                        const first5Sentences = sentences.slice(0, 5).join('. ');
+                        preview = first5Sentences;
+
+                        // Limit to ~400 chars max
+                        if (preview.length > 400) {
+                            preview = preview.substring(0, 400) + '...';
+                        } else if (sentences.length > 5) {
+                            preview += '...';
+                        }
+                    }
+
+                    return `
+                        <div class="modal-memory-item">
+                            <div class="memory-score">Similarity: ${(m.score || 0).toFixed(3)}</div>
+                            <div class="memory-content">${preview}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('modalMemories').innerHTML = memoriesHtml;
+                document.getElementById('searchModal').classList.add('active');
+                document.getElementById('modalOverlay').classList.add('active');
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Update and draw particles
+                this.particles.forEach(particle => {
+                    particle.update();
+                    particle.draw(this.ctx);
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Initialize constellation
+        let constellation = null;
+        document.addEventListener('DOMContentLoaded', () => {
+            constellation = new Constellation('constellation-canvas');
+
+            // Modal close handlers
+            document.getElementById('modalClose').addEventListener('click', closeModal);
+            document.getElementById('modalOverlay').addEventListener('click', closeModal);
+        });
+
+        function closeModal() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+        // ========== END CONSTELLATION SYSTEM ==========
+
+        // Load API keys from server on page load
+        async function loadKeys() {
+            const response = await fetch('/api/keys');
+            const data = await response.json();
+            OPENAI_API_KEY = data.openai_key;
+            PAPR_API_KEY = data.papr_key;
+        }
+
+        // Load keys immediately
+        loadKeys();
+
+        // DOM elements
+        const audioBtn = document.getElementById('audioBtn');
+        const textInput = document.getElementById('textInput');
+        const status = document.getElementById('status');
+        const transcript = document.getElementById('transcript');
+        const errorDiv = document.getElementById('error');
+
+        // Update status
+        function setStatus(text, className) {
+            status.textContent = text;
+            status.className = className;
+        }
+
+        // Show error
+        function showError(message) {
+            errorDiv.textContent = message;
+            setTimeout(() => errorDiv.textContent = '', 5000);
+        }
+
+        // Add message to transcript
+        function addMessage(role, text) {
+            transcript.classList.remove('hidden');
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            div.textContent = `${role === 'user' ? 'You' : 'AI'}: ${text}`;
+            transcript.appendChild(div);
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        // Initialize WebSocket connection
+        async function connect() {
+            try {
+                setStatus('Connecting...', 'thinking');
+
+                // Wait for keys to load
+                if (!OPENAI_API_KEY || !PAPR_API_KEY) {
+                    showError('Loading API keys...');
+                    setTimeout(connect, 500);
+                    return;
+                }
+
+                // Connect to Realtime API using browser-compatible auth
+                // Use sec-websocket-protocol for authentication
+                const protocols = ['realtime', `openai-insecure-api-key.${OPENAI_API_KEY}`.substring(0, 255)];
+                ws = new WebSocket(WS_URL, protocols);
+
+                ws.onopen = () => {
+                    console.log('WebSocket connected');
+                    isConnected = true;
+
+                    // Configure session (GA format)
+                    ws.send(JSON.stringify({
+                        type: 'session.update',
+                        session: {
+                            type: 'realtime',
+                            model: 'gpt-realtime',
+                            instructions: 'You are a helpful memory assistant for PAPR. When users ask about their memories, use the search_papr_memories tool to find relevant information.',
+                            audio: {
+                                input: {
+                                    format: {
+                                        type: 'audio/pcm',
+                                        rate: 24000
+                                    },
+                                    turn_detection: {
+                                        type: 'semantic_vad'
+                                    }
+                                },
+                                output: {
+                                    format: {
+                                        type: 'audio/pcm',
+                                        rate: 24000
+                                    },
+                                    voice: 'alloy'
+                                }
+                            },
+                            tools: [{
+                                type: 'function',
+                                name: 'search_papr_memories',
+                                description: 'Search the user\'s personal memory database',
+                                parameters: {
+                                    type: 'object',
+                                    properties: {
+                                        query: {
+                                            type: 'string',
+                                            description: 'The search query'
+                                        }
+                                    },
+                                    required: ['query']
+                                }
+                            }],
+                            tool_choice: 'auto'
+                        }
+                    }));
+
+                    // Start audio capture
+                    startAudio();
+                };
+
+                ws.onmessage = (event) => {
+                    const message = JSON.parse(event.data);
+                    handleServerMessage(message);
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    showError('Connection error');
+                    disconnect();
+                };
+
+                ws.onclose = () => {
+                    console.log('WebSocket closed');
+                    disconnect();
+                };
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                showError(error.message);
+                setStatus('Ready', 'idle');
+            }
+        }
+
+        // Handle messages from server
+        function handleServerMessage(message) {
+            console.log('Server message:', message.type);
+
+            switch (message.type) {
+                case 'conversation.item.input_audio_transcription.completed':
+                    // User speech transcribed
+                    const userText = message.transcript;
+                    if (userText) {
+                        addMessage('user', userText);
+                        setStatus('Thinking...', 'thinking');
+                    }
+                    break;
+
+                case 'response.created':
+                    // New response starting - reset audio queue
+                    nextAudioTime = 0;
+                    break;
+
+                case 'response.output_audio_transcript.delta':
+                    // AI is generating text response (GA event name)
+                    setStatus('Speaking...', 'speaking');
+                    break;
+
+                case 'response.output_audio.delta':
+                    // AI audio chunk - play it (GA event name)
+                    playAudioChunk(message.delta);
+                    break;
+
+                case 'response.done':
+                    // Response complete - check if it contains a function call
+                    if (message.response && message.response.output) {
+                        for (const item of message.response.output) {
+                            if (item.type === 'function_call') {
+                                handleToolCall(item);
+                                return; // Don't set status to listening yet
+                            }
+                        }
+                    }
+                    setStatus('Listening...', 'listening');
+                    break;
+
+                case 'error':
+                    showError(message.error.message || 'An error occurred');
+                    break;
+            }
+        }
+
+        // Handle tool calls
+        async function handleToolCall(item) {
+            if (item.name === 'search_papr_memories') {
+                setStatus('Searching memories...', 'thinking');
+
+                const args = JSON.parse(item.arguments);
+                const query = args.query;
+
+                // Call LOCAL CoreML search endpoint!
+                try {
+                    const searchStartTime = performance.now();
+
+                    const response = await fetch(PAPR_MEMORY_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: query,
+                            max_memories: 30
+                        })
+                    });
+
+                    const data = await response.json();
+                    const searchLatency = Math.round(performance.now() - searchStartTime);
+
+                    const memories = data.data.memories.map(m => ({
+                        content: m.content,
+                        score: m.similarity_score || m.score || 0
+                    }));
+
+                    // Add search to constellation visualization
+                    if (constellation) {
+                        constellation.addSearch(query, data.latency_ms || searchLatency, memories);
+                    }
+
+                    // Send tool result back to OpenAI
+                    ws.send(JSON.stringify({
+                        type: 'conversation.item.create',
+                        item: {
+                            type: 'function_call_output',
+                            call_id: item.call_id,
+                            output: JSON.stringify({
+                                memories: memories,
+                                count: memories.length
+                            })
+                        }
+                    }));
+
+                    // Request continuation
+                    ws.send(JSON.stringify({
+                        type: 'response.create'
+                    }));
+
+                } catch (error) {
+                    console.error('Memory search error:', error);
+                    showError('Failed to search memories');
+                }
+            }
+        }
+
+        // Start audio capture
+        async function startAudio() {
+            try {
+                // Get microphone access
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+
+                // Create audio context
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                    sampleRate: 24000
+                });
+
+                const source = audioContext.createMediaStreamSource(mediaStream);
+                const processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+                source.connect(processor);
+                processor.connect(audioContext.destination);
+
+                processor.onaudioprocess = (e) => {
+                    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+                    const inputData = e.inputBuffer.getChannelData(0);
+
+                    // Convert to PCM16
+                    const pcm16 = new Int16Array(inputData.length);
+                    for (let i = 0; i < inputData.length; i++) {
+                        pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+                    }
+
+                    // Send to API
+                    const base64Audio = btoa(String.fromCharCode.apply(null, new Uint8Array(pcm16.buffer)));
+                    ws.send(JSON.stringify({
+                        type: 'input_audio_buffer.append',
+                        audio: base64Audio
+                    }));
+                };
+
+                setStatus('Listening...', 'listening');
+                audioBtn.classList.add('active');
+
+            } catch (error) {
+                console.error('Audio error:', error);
+                showError('Microphone access denied');
+                disconnect();
+            }
+        }
+
+        // Play audio chunk with proper queueing
+        function playAudioChunk(base64Audio) {
+            try {
+                const audioData = atob(base64Audio);
+                const bytes = new Uint8Array(audioData.length);
+                for (let i = 0; i < audioData.length; i++) {
+                    bytes[i] = audioData.charCodeAt(i);
+                }
+
+                const int16Array = new Int16Array(bytes.buffer);
+                const float32Array = new Float32Array(int16Array.length);
+                for (let i = 0; i < int16Array.length; i++) {
+                    float32Array[i] = int16Array[i] / 32768;
+                }
+
+                const audioBuffer = audioContext.createBuffer(1, float32Array.length, 24000);
+                audioBuffer.getChannelData(0).set(float32Array);
+
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+
+                // Schedule playback at the next available time
+                const currentTime = audioContext.currentTime;
+                const scheduleTime = Math.max(currentTime, nextAudioTime);
+                source.start(scheduleTime);
+
+                // Update next audio time
+                nextAudioTime = scheduleTime + audioBuffer.duration;
+
+            } catch (error) {
+                console.error('Audio playback error:', error);
+            }
+        }
+
+        // Disconnect
+        function disconnect() {
+            isConnected = false;
+
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+
+            setStatus('Ready', 'idle');
+            audioBtn.classList.remove('active');
+            transcript.innerHTML = '';
+            transcript.classList.add('hidden');
+        }
+
+        // Audio button click handler
+        audioBtn.addEventListener('click', () => {
+            if (isConnected) {
+                disconnect();
+            } else {
+                connect();
+            }
+        });
+
+        // Text input Enter key handler
+        textInput.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter' && textInput.value.trim()) {
+                const query = textInput.value.trim();
+                textInput.value = '';
+
+                // Show user query
+                addMessage('user', query);
+                setStatus('Searching memories...', 'thinking');
+
+                try {
+                    // Search PAPR memories with LOCAL CoreML!
+                    const response = await fetch(PAPR_MEMORY_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query: query,
+                            max_memories: 30
+                        })
+                    });
+
+                    const data = await response.json();
+                    const memories = data.data.memories.slice(0, 5).map(m => m.content);
+
+                    // Create AI response
+                    const aiResponse = memories.length > 0
+                        ? `I found ${memories.length} relevant memories:\n\n${memories.map((m, i) => `${i + 1}. ${m.substring(0, 100)}...`).join('\n\n')}`
+                        : "I couldn't find any relevant memories for your query.";
+
+                    addMessage('assistant', aiResponse);
+                    setStatus('Ready', 'idle');
+
+                } catch (error) {
+                    console.error('Search error:', error);
+                    showError('Failed to search memories');
+                    setStatus('Ready', 'idle');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
