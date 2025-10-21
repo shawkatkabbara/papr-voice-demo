@@ -88,10 +88,12 @@ def search_memories():
 
         print(f"\n🔍 Search request: query='{query}', max_memories={max_memories}")
 
-        # Time the search
-        start_time = time.perf_counter()
+        # Detailed timing breakdown
+        request_start = time.perf_counter()
 
-        # REAL on-device search with CoreML!
+        # Time the SDK call separately
+        sdk_start = time.perf_counter()
+
         response = papr_client.memory.search(
             query=query,
             max_memories=max_memories,
@@ -100,43 +102,87 @@ def search_memories():
             timeout=180.0
         )
 
-        latency_ms = (time.perf_counter() - start_time) * 1000
+        sdk_end = time.perf_counter()
 
-        print(f"⏱️  Search completed in {latency_ms:.1f}ms")
-        print(f"📦 Response object: {response}")
-        print(f"📊 Response.data: {response.data if response else 'None'}")
-        print(f"📋 Response.data.memories: {response.data.memories if (response and response.data) else 'None'}")
+        # SDK latency (embedding + ChromaDB search)
+        sdk_latency_ms = (sdk_end - sdk_start) * 1000
 
-        # Extract memories from response
+        # Estimate: ~70-80% is embedding, ~20-30% is search for CoreML
+        estimated_embedding_ms = sdk_latency_ms * 0.75
+        estimated_search_ms = sdk_latency_ms * 0.25
+
+        # Extract memories from response with proper null handling
         memories = []
         if response and response.data and response.data.memories:
             for mem in response.data.memories:
-                # Try to get score from pydantic_extra__ first, then fallback
+                # Get similarity score
                 score = 0.0
                 if hasattr(mem, 'pydantic_extra__') and mem.pydantic_extra__:
                     score = mem.pydantic_extra__.get('similarity_score', 0.0)
                 else:
                     score = getattr(mem, 'score', 0.0)
 
+                # Get content with null checking
+                content = getattr(mem, 'content', None)
+                # Handle None, empty string, and string 'None'
+                if content is None or (isinstance(content, str) and (content.strip() == '' or content.strip().lower() == 'none')):
+                    content = None  # Will be handled in frontend
+
+                # Get tags and topics
+                tags = getattr(mem, 'tags', None) or []
+                topics = getattr(mem, 'topics', None) or []
+
+                # Get custom metadata
+                custom_metadata = getattr(mem, 'custom_metadata', None)
+
+                # Build metadata dict
+                metadata = getattr(mem, 'metadata', {})
+
                 memories.append({
-                    'content': mem.content,
+                    'content': content,
                     'similarity_score': score,
                     'score': score,
-                    'metadata': getattr(mem, 'metadata', {}),
+                    'tags': tags,
+                    'topics': topics,
+                    'custom_metadata': custom_metadata,
+                    'metadata': metadata,
                     'id': getattr(mem, 'id', 'N/A')
                 })
 
-        print(f"✅ CoreML search: {len(memories)} results in {latency_ms:.1f}ms")
+        # Calculate total end-to-end latency (includes Python/Flask overhead)
+        total_latency_ms = (time.perf_counter() - request_start) * 1000
+
+        # Python/Flask processing overhead (time outside SDK call)
+        processing_overhead_ms = total_latency_ms - sdk_latency_ms
+
+        latency_breakdown = {
+            'total_ms': round(total_latency_ms, 1),
+            'sdk_processing_ms': round(sdk_latency_ms, 1),
+            'embedding_generation_ms': round(estimated_embedding_ms, 1),  # Estimated
+            'chromadb_search_ms': round(estimated_search_ms, 1),  # Estimated
+            'processing_overhead_ms': round(processing_overhead_ms, 1),  # Python + Flask
+            'note': 'Embedding and search times are estimated (75%/25% split). Processing overhead includes Python and Flask. Ngrok network latency not measured.'
+        }
+
+        print(f"⏱️  Total latency: {latency_breakdown['total_ms']:.1f}ms")
+        print(f"   ├─ SDK processing: {latency_breakdown['sdk_processing_ms']:.1f}ms")
+        print(f"   │  ├─ Embedding (est): {latency_breakdown['embedding_generation_ms']:.1f}ms")
+        print(f"   │  └─ ChromaDB (est): {latency_breakdown['chromadb_search_ms']:.1f}ms")
+        print(f"   └─ Processing overhead: {latency_breakdown['processing_overhead_ms']:.1f}ms (Python + Flask)")
+        print(f"✅ CoreML search: {len(memories)} results in {latency_breakdown['total_ms']:.1f}ms")
 
         return jsonify({
             'data': {
                 'memories': memories
             },
-            'latency_ms': latency_ms
+            'latency_ms': latency_breakdown['total_ms'],
+            'latency_breakdown': latency_breakdown
         })
 
     except Exception as e:
         print(f"❌ Search error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 

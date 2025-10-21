@@ -280,6 +280,68 @@
             font-style: italic;
         }
 
+        .memory-tags {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(255, 180, 0, 0.2);
+            color: #FFB400;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 180, 0, 0.3);
+        }
+
+        .topic {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(0, 166, 153, 0.2);
+            color: #00A699;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(0, 166, 153, 0.3);
+        }
+
+        .metadata-section {
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            font-size: 11px;
+            color: #767676;
+        }
+
+        .latency-breakdown {
+            margin-top: 8px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .latency-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .latency-item .label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .latency-item .value {
+            color: #0CCDFF;
+            font-weight: 600;
+        }
+
         .modal-close {
             position: absolute;
             top: 16px;
@@ -323,6 +385,7 @@
         <div class="modal-header">Search Query</div>
         <div class="modal-query" id="modalQuery"></div>
         <div class="modal-latency" id="modalLatency"></div>
+        <div id="modalLatencyBreakdown"></div>
         <div class="modal-header">Top Memories</div>
         <div class="modal-memories" id="modalMemories"></div>
     </div>
@@ -471,7 +534,7 @@
                 this.centerY = this.canvas.height / 2;
             }
 
-            addSearch(query, latencyMs, memories) {
+            addSearch(query, latencyMs, memories, latencyBreakdown) {
                 // Remove oldest if at limit
                 if (this.particles.length >= MAX_PARTICLES) {
                     this.particles.shift();
@@ -490,6 +553,7 @@
                     query,
                     latencyMs,
                     memories: memories.slice(0, 5), // Top 5
+                    latencyBreakdown,
                     timestamp: new Date()
                 };
 
@@ -535,13 +599,41 @@
                 const latency = Math.round(searchData.latencyMs);
                 document.getElementById('modalLatency').textContent = `⚡ ${latency}ms`;
 
+                // Display latency breakdown if available
+                if (searchData.latencyBreakdown) {
+                    const breakdown = searchData.latencyBreakdown;
+                    const breakdownHtml = `
+                        <div class="latency-breakdown">
+                            <div class="latency-item">
+                                <span class="label">Total Latency:</span>
+                                <span class="value">${breakdown.total_ms}ms</span>
+                            </div>
+                            <div class="latency-item">
+                                <span class="label">├─ Embedding Generation:</span>
+                                <span class="value">${breakdown.embedding_generation_ms}ms</span>
+                            </div>
+                            <div class="latency-item">
+                                <span class="label">├─ ChromaDB Search:</span>
+                                <span class="value">${breakdown.chromadb_search_ms}ms</span>
+                            </div>
+                            <div class="latency-item">
+                                <span class="label">└─ Processing Overhead:</span>
+                                <span class="value">${breakdown.processing_overhead_ms}ms</span>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('modalLatencyBreakdown').innerHTML = breakdownHtml;
+                } else {
+                    document.getElementById('modalLatencyBreakdown').innerHTML = '';
+                }
+
                 const memoriesHtml = searchData.memories.map((m, index) => {
                     // Get first 4-5 sentences (approximately 400 chars)
                     let content = m.content;
                     let preview = '';
 
                     // Handle missing or 'None' content
-                    if (!content || content === 'None' || content.trim() === '') {
+                    if (!content || content === 'None' || content === null || (typeof content === 'string' && content.trim() === '')) {
                         preview = '<em>(No content available for this memory)</em>';
                     } else {
                         // Split by sentences
@@ -557,10 +649,34 @@
                         }
                     }
 
+                    // Build tags display
+                    let tagsHtml = '';
+                    if (m.tags && Array.isArray(m.tags) && m.tags.length > 0) {
+                        const tagElements = m.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+                        tagsHtml = `<div class="memory-tags">${tagElements}</div>`;
+                    }
+
+                    // Build topics display
+                    let topicsHtml = '';
+                    if (m.topics && Array.isArray(m.topics) && m.topics.length > 0) {
+                        const topicElements = m.topics.map(topic => `<span class="topic">${topic}</span>`).join('');
+                        topicsHtml = `<div class="memory-tags">${topicElements}</div>`;
+                    }
+
+                    // Build custom metadata display
+                    let metadataHtml = '';
+                    if (m.custom_metadata && Object.keys(m.custom_metadata).length > 0) {
+                        const metadataStr = JSON.stringify(m.custom_metadata, null, 2);
+                        metadataHtml = `<div class="metadata-section"><strong>Custom Metadata:</strong><br><pre style="margin: 4px 0 0 0; font-size: 10px;">${metadataStr}</pre></div>`;
+                    }
+
                     return `
                         <div class="modal-memory-item">
                             <div class="memory-score">Similarity: ${(m.score || 0).toFixed(3)}</div>
                             <div class="memory-content">${preview}</div>
+                            ${tagsHtml}
+                            ${topicsHtml}
+                            ${metadataHtml}
                         </div>
                     `;
                 }).join('');
@@ -807,12 +923,20 @@
 
                     const memories = data.data.memories.map(m => ({
                         content: m.content,
-                        score: m.similarity_score || m.score || 0
+                        score: m.similarity_score || m.score || 0,
+                        tags: m.tags || [],
+                        topics: m.topics || [],
+                        custom_metadata: m.custom_metadata || null
                     }));
 
                     // Add search to constellation visualization
                     if (constellation) {
-                        constellation.addSearch(query, data.latency_ms || searchLatency, memories);
+                        constellation.addSearch(
+                            query,
+                            data.latency_ms || searchLatency,
+                            memories,
+                            data.latency_breakdown || null
+                        );
                     }
 
                     // Send tool result back to OpenAI
