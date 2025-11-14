@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAPR Pipecat Voice Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status.disconnected {
+            background: #fee;
+            color: #c33;
+            border: 2px solid #fcc;
+        }
+
+        .status.connecting {
+            background: #ffc;
+            color: #883;
+            border: 2px solid #ffb;
+        }
+
+        .status.connected {
+            background: #efe;
+            color: #383;
+            border: 2px solid #cfc;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .connect-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .disconnect-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .disconnect-btn:hover:not(:disabled) {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .test-input {
+            margin-bottom: 30px;
+        }
+
+        .test-input input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .test-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .test-input button {
+            width: 100%;
+            background: #4caf50;
+            color: white;
+        }
+
+        .test-input button:hover:not(:disabled) {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .messages {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.system {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message.user {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .message.assistant {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .message.error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .message .role {
+            font-weight: 600;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .message .content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .message .timestamp {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .latency-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .stat .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat .label {
+            font-size: 0.85em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .info strong {
+            color: #1976d2;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 PAPR Pipecat Voice Test</h1>
+        <div class="subtitle">Testing Pipecat voice pipeline with memory integration</div>
+
+        <div id="status" class="status disconnected">
+            ⚫ Disconnected
+        </div>
+
+        <div class="controls">
+            <button id="connectBtn" class="connect-btn">Connect to Pipecat</button>
+            <button id="disconnectBtn" class="disconnect-btn" disabled>Disconnect</button>
+        </div>
+
+        <div class="test-input">
+            <input
+                type="text"
+                id="testQuery"
+                placeholder="Type a message to test (e.g., 'What are my recent tasks?')"
+                disabled
+            />
+            <button id="sendBtn" disabled>Send Test Message</button>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="message system">
+                <div class="role">System</div>
+                <div class="content">
+                    <strong>Note:</strong> This is a simplified test client for the Pipecat integration.
+                    Audio streaming is not implemented - this is for testing text-based interactions and memory retrieval latency.
+                </div>
+            </div>
+        </div>
+
+        <div class="latency-stats">
+            <div class="stat">
+                <div class="value" id="messageCount">0</div>
+                <div class="label">Messages</div>
+            </div>
+            <div class="stat">
+                <div class="value" id="avgLatency">-</div>
+                <div class="label">Avg Latency</div>
+            </div>
+            <div class="stat">
+                <div class="value" id="lastLatency">-</div>
+                <div class="label">Last Query</div>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Architecture:</strong> Browser → Pipecat WebSocket (<code>ws://localhost:8000/ws</code>) → Flask CoreML (<code>http://localhost:3001</code>)<br>
+            <strong>Expected Latency:</strong> ~200-300ms total (Memory search: <100ms, STT: 50-100ms, LLM: 50-100ms)
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection
+        let ws = null;
+        let messageCount = 0;
+        let latencies = [];
+
+        // DOM elements
+        const statusEl = document.getElementById('status');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const messagesEl = document.getElementById('messages');
+        const testQueryInput = document.getElementById('testQuery');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Connect to Pipecat WebSocket
+        connectBtn.addEventListener('click', async () => {
+            try {
+                updateStatus('connecting', '🟡 Connecting to Pipecat...');
+                connectBtn.disabled = true;
+
+                // Note: This is a simplified connection for testing
+                // Full Pipecat integration requires Protobuf protocol
+                ws = new WebSocket('ws://localhost:8000/ws');
+
+                ws.onopen = () => {
+                    updateStatus('connected', '🟢 Connected to Pipecat server');
+                    disconnectBtn.disabled = false;
+                    testQueryInput.disabled = false;
+                    sendBtn.disabled = false;
+                    addMessage('system', 'Connected! You can now send test messages.');
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        // For this test, we're expecting text responses
+                        // Full implementation would handle Protobuf frames
+                        console.log('Received:', event.data);
+
+                        if (typeof event.data === 'string') {
+                            try {
+                                const data = JSON.parse(event.data);
+                                handleMessage(data);
+                            } catch {
+                                // Plain text response
+                                addMessage('assistant', event.data);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Message handling error:', error);
+                    }
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    addMessage('error', 'WebSocket error occurred. Check console for details.');
+                };
+
+                ws.onclose = () => {
+                    updateStatus('disconnected', '⚫ Disconnected');
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                    testQueryInput.disabled = true;
+                    sendBtn.disabled = true;
+                    addMessage('system', 'Disconnected from Pipecat server');
+                };
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                updateStatus('disconnected', '⚫ Connection failed');
+                connectBtn.disabled = false;
+                addMessage('error', `Connection failed: ${error.message}`);
+            }
+        });
+
+        // Disconnect
+        disconnectBtn.addEventListener('click', () => {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        });
+
+        // Send test message
+        sendBtn.addEventListener('click', sendTestMessage);
+        testQueryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendTestMessage();
+        });
+
+        function sendTestMessage() {
+            const query = testQueryInput.value.trim();
+            if (!query || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+            const startTime = Date.now();
+
+            // Send as simple text for this test
+            // Full implementation would use Protobuf
+            ws.send(JSON.stringify({
+                type: 'text',
+                content: query
+            }));
+
+            addMessage('user', query);
+            testQueryInput.value = '';
+
+            // Track latency
+            const checkLatency = setInterval(() => {
+                if (ws.readyState !== WebSocket.OPEN) {
+                    clearInterval(checkLatency);
+                }
+            }, 100);
+
+            // Store start time for latency calculation
+            window.lastQueryTime = startTime;
+        }
+
+        function handleMessage(data) {
+            if (data.type === 'response') {
+                addMessage('assistant', data.content);
+
+                // Calculate latency if we have start time
+                if (window.lastQueryTime) {
+                    const latency = Date.now() - window.lastQueryTime;
+                    updateLatencyStats(latency);
+                    delete window.lastQueryTime;
+                }
+            } else if (data.type === 'memory') {
+                addMessage('system', `Memory search: ${data.count} results in ${data.latency}ms`);
+            }
+        }
+
+        function addMessage(role, content) {
+            messageCount++;
+
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${role}`;
+
+            const roleEl = document.createElement('div');
+            roleEl.className = 'role';
+            roleEl.textContent = role;
+
+            const contentEl = document.createElement('div');
+            contentEl.className = 'content';
+            contentEl.textContent = content;
+
+            const timestampEl = document.createElement('div');
+            timestampEl.className = 'timestamp';
+            timestampEl.textContent = new Date().toLocaleTimeString();
+
+            messageEl.appendChild(roleEl);
+            messageEl.appendChild(contentEl);
+            messageEl.appendChild(timestampEl);
+
+            messagesEl.appendChild(messageEl);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            // Update message count
+            document.getElementById('messageCount').textContent = messageCount;
+        }
+
+        function updateStatus(state, text) {
+            statusEl.className = `status ${state}`;
+            statusEl.textContent = text;
+        }
+
+        function updateLatencyStats(latency) {
+            latencies.push(latency);
+
+            // Update last latency
+            document.getElementById('lastLatency').textContent = `${latency}ms`;
+
+            // Update average latency
+            const avg = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+            document.getElementById('avgLatency').textContent = `${Math.round(avg)}ms`;
+        }
+
+        // Initial message
+        addMessage('system', 'Click "Connect to Pipecat" to start testing. Make sure both Flask CoreML (port 3001) and Pipecat server (port 8000) are running.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+streamlit>=1.28.0
+openai>=1.0.0
+python-dotenv>=1.0.0
+websockets>=12.0
+streamlit-audiorecorder>=0.0.5
+pydub>=0.25.1
+
+# Flask server for voice.html constellation UI
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# PAPR Python SDK dependencies (required for local SDK development)
+# These match papr-pythonSDK/pyproject.toml dependencies
+httpx>=0.23.0,<1
+pydantic>=2.7,<3
+typing-extensions>=4.10,<5
+anyio>=3.5.0,<5
+distro>=1.7.0,<2
+sniffio
+chromadb>=0.4.0
+sentence-transformers>=2.0.0
+psutil>=5.8.0
+
+# Optional: CoreML support (for Apple Silicon)
+coremltools>=7.0
+transformers>=4.44
+torch>=2.0.0
+huggingface_hub>=0.20.0
+
+# Note: For local development, app.py uses ~/Documents/GitHub/papr-pythonSDK/src
+# These dependencies must be installed here since we're not pip installing the SDK package

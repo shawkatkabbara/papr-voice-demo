@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run PAPR Voice Demo
+# Run PAPR Voice Orb Demo with OpenAI Realtime API
 
 set -e
 
@@ -14,8 +14,9 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
-echo "🎤 Starting PAPR Voice Demo..."
+echo "🎤 Starting PAPR Voice Orb Demo (OpenAI Realtime API)..."
+echo "✨ Real-time voice with animated orb UI"
 echo ""
 
-# Run Streamlit app
-streamlit run app.py
+# Run Streamlit app with voice orb UI
+streamlit run app_voice_orb.py

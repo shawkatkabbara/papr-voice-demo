@@ -670,9 +670,17 @@
                         metadataHtml = `<div class="metadata-section"><strong>Custom Metadata:</strong><br><pre style="margin: 4px 0 0 0; font-size: 10px;">${metadataStr}</pre></div>`;
                     }
 
+                    // Build scores display with both query similarity and relevance
+                    const queryScore = (m.query_similarity || m.score || 0).toFixed(3);
+                    const relevanceScore = (m.relevance_score || 0).toFixed(3);
+
+                    const scoresHtml = relevanceScore !== '0.000'
+                        ? `<div class="memory-score">Query Match: ${queryScore} | Goal Relevance: ${relevanceScore}</div>`
+                        : `<div class="memory-score">Query Match: ${queryScore}</div>`;
+
                     return `
                         <div class="modal-memory-item">
-                            <div class="memory-score">Similarity: ${(m.score || 0).toFixed(3)}</div>
+                            ${scoresHtml}
                             <div class="memory-content">${preview}</div>
                             ${tagsHtml}
                             ${topicsHtml}
@@ -773,16 +781,28 @@
                 ws = new WebSocket(WS_URL, protocols);
 
                 ws.onopen = () => {
-                    console.log('WebSocket connected');
+                    console.log('✅ WebSocket connected to OpenAI Realtime API');
                     isConnected = true;
 
                     // Configure session (GA format)
+                    console.log('📤 Sending session.update configuration...');
                     ws.send(JSON.stringify({
                         type: 'session.update',
                         session: {
                             type: 'realtime',
                             model: 'gpt-realtime',
-                            instructions: 'You are a helpful memory assistant for PAPR. When users ask about their memories, use the search_papr_memories tool to find relevant information.',
+                            instructions: `You are PAPR's memory assistant with access to the user's personal memory database.
+
+IMPORTANT INSTRUCTIONS:
+1. When users ask about their memories, ALWAYS use the search_papr_memories tool first
+2. The tool returns an array of memory objects with 'content', 'score', 'tags', and 'topics'
+3. ALWAYS base your answers on the ACTUAL CONTENT from the memories returned
+4. Quote or paraphrase specific details from the memory content
+5. If no relevant memories are found, clearly say "I don't have any information about that in your memories"
+6. NEVER make up or hallucinate information not present in the memory content
+7. Higher scores indicate more relevant memories - prioritize those in your answer
+
+Format your responses conversationally, citing the relevant memories naturally.`,
                             audio: {
                                 input: {
                                     format: {
@@ -826,6 +846,7 @@
 
                 ws.onmessage = (event) => {
                     const message = JSON.parse(event.data);
+                    console.log('📨 OpenAI message:', message.type, message);
                     handleServerMessage(message);
                 };
 
@@ -835,8 +856,12 @@
                     disconnect();
                 };
 
-                ws.onclose = () => {
-                    console.log('WebSocket closed');
+                ws.onclose = (event) => {
+                    console.log('❌ WebSocket closed:', {
+                        code: event.code,
+                        reason: event.reason,
+                        wasClean: event.wasClean
+                    });
                     disconnect();
                 };
 
@@ -849,12 +874,28 @@
 
         // Handle messages from server
         function handleServerMessage(message) {
-            console.log('Server message:', message.type);
+            // Don't log every single audio delta (too verbose)
+            if (message.type !== 'response.output_audio.delta' && message.type !== 'input_audio_buffer.speech_started') {
+                console.log('📬 Handling:', message.type, message);
+            }
 
             switch (message.type) {
+                case 'session.updated':
+                    console.log('✅ Session configured successfully');
+                    break;
+
+                case 'input_audio_buffer.speech_started':
+                    console.log('🗣️ Speech detected - user started talking');
+                    break;
+
+                case 'input_audio_buffer.speech_stopped':
+                    console.log('🛑 Speech stopped - processing...');
+                    break;
+
                 case 'conversation.item.input_audio_transcription.completed':
                     // User speech transcribed
                     const userText = message.transcript;
+                    console.log('📝 Transcription:', userText);
                     if (userText) {
                         addMessage('user', userText);
                         setStatus('Thinking...', 'thinking');
@@ -890,7 +931,15 @@
                     break;
 
                 case 'error':
+                    console.error('❌ OpenAI Error:', message.error);
                     showError(message.error.message || 'An error occurred');
+                    break;
+
+                default:
+                    // Log any unhandled message types
+                    if (!message.type.includes('audio.delta')) {
+                        console.log('📭 Unhandled message type:', message.type, message);
+                    }
                     break;
             }
         }
@@ -939,16 +988,40 @@
                         );
                     }
 
+                    // Log what we're sending to OpenAI
+                    console.log(`\n📤 Sending ${memories.length} memories to OpenAI:`);
+                    const memoriesWithContent = memories.filter(m => m.content && m.content.trim()).length;
+                    const memoriesWithoutContent = memories.length - memoriesWithContent;
+                    console.log(`   ✅ ${memoriesWithContent} with content`);
+                    console.log(`   ❌ ${memoriesWithoutContent} without content`);
+                    console.log(`\n📋 First 10 memories being sent:`);
+                    memories.slice(0, 10).forEach((m, i) => {
+                        const preview = m.content ? m.content.substring(0, 100) : '(No content)';
+                        console.log(`   [${i + 1}] Score: ${m.similarity_score?.toFixed(4) || '0.0000'} | ${preview}...`);
+                    });
+
+                    // Format memories as clear text for better OpenAI comprehension
+                    const formattedMemories = memories
+                        .filter(m => m.content && m.content.trim())
+                        .map((m, i) => {
+                            const score = (m.score || 0).toFixed(3);
+                            const tags = m.tags && m.tags.length > 0 ? ` [Tags: ${m.tags.join(', ')}]` : '';
+                            const topics = m.topics && m.topics.length > 0 ? ` [Topics: ${m.topics.join(', ')}]` : '';
+                            return `Memory ${i + 1} (relevance: ${score})${tags}${topics}:\n${m.content}\n`;
+                        })
+                        .join('\n---\n\n');
+
+                    const outputText = memories.length > 0
+                        ? `Found ${memories.length} relevant memories:\n\n${formattedMemories}`
+                        : 'No relevant memories found for this query.';
+
                     // Send tool result back to OpenAI
                     ws.send(JSON.stringify({
                         type: 'conversation.item.create',
                         item: {
                             type: 'function_call_output',
                             call_id: item.call_id,
-                            output: JSON.stringify({
-                                memories: memories,
-                                count: memories.length
-                            })
+                            output: outputText
                         }
                     }));
 
@@ -967,6 +1040,7 @@
         // Start audio capture
         async function startAudio() {
             try {
+                console.log('🎤 Requesting microphone access...');
                 // Get microphone access
                 mediaStream = await navigator.mediaDevices.getUserMedia({
                     audio: {
@@ -975,11 +1049,13 @@
                         autoGainControl: true
                     }
                 });
+                console.log('✅ Microphone access granted');
 
                 // Create audio context
                 audioContext = new (window.AudioContext || window.webkitAudioContext)({
                     sampleRate: 24000
                 });
+                console.log('✅ AudioContext created (24kHz)');
 
                 const source = audioContext.createMediaStreamSource(mediaStream);
                 const processor = audioContext.createScriptProcessor(4096, 1, 1);
@@ -987,6 +1063,7 @@
                 source.connect(processor);
                 processor.connect(audioContext.destination);
 
+                let audioChunksSent = 0;
                 processor.onaudioprocess = (e) => {
                     if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
@@ -1004,21 +1081,30 @@
                         type: 'input_audio_buffer.append',
                         audio: base64Audio
                     }));
+
+                    // Log first few audio chunks, then every 100th
+                    audioChunksSent++;
+                    if (audioChunksSent <= 5 || audioChunksSent % 100 === 0) {
+                        console.log(`🎵 Sent audio chunk #${audioChunksSent} (${base64Audio.length} bytes)`);
+                    }
                 };
 
                 setStatus('Listening...', 'listening');
                 audioBtn.classList.add('active');
+                console.log('✅ Audio capture started - speak now!');
 
             } catch (error) {
-                console.error('Audio error:', error);
+                console.error('❌ Audio error:', error);
                 showError('Microphone access denied');
                 disconnect();
             }
         }
 
+
         // Play audio chunk with proper queueing
         function playAudioChunk(base64Audio) {
             try {
+                
                 const audioData = atob(base64Audio);
                 const bytes = new Uint8Array(audioData.length);
                 for (let i = 0; i < audioData.length; i++) {

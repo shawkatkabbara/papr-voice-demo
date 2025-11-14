@@ -1,0 +1,637 @@
+====================================================================================================
+TOP 20 MEMORIES FROM CHROMADB
+Total in collection: 176
+====================================================================================================
+
+####################################################################################################
+MEMORY [1]
+####################################################################################################
+
+🔑 ID: tier0_0_8ffe4938-0177-a212-b5f8-2973d193b8cc
+
+📄 CONTENT (ChromaDB document field):
+   
+<span data-ids="" style="">---</span>
+
+### <span data-ids="" style="">Meeting Overview</span>
+
+<span data-ids="" style="">You met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.</span>
+
+### <span data-ids="" style="">Key Insights</span>
+
+**<span data-ids="" style="">1. Dialpad's Current Infrastructure</span>**
+
+- <span d...
+   [Content length: 11300 characters]
+
+📊 METADATA:
+   id: 8ffe4938-0177-a212-b5f8-2973d193b8cc
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2555/2560 (99.8%)
+   First 10 values: [-0.00069634 -0.00859487  0.0085312   0.00155185 -0.00308779  0.05449785
+  0.0733429  -0.00725789 -0.00111415 -0.01731707]
+
+####################################################################################################
+MEMORY [2]
+####################################################################################################
+
+🔑 ID: tier0_1_8a5b40a9-e0dc-44be-40a6-07f8c44757a6
+
+📄 CONTENT (ChromaDB document field):
+   # <span style="font-size: 23pt; font-family: Nunito, sans-serif; color: rgb(28, 32, 36)">Top 20 a16z Speedrun Interview Questions & Answers for Papr</span>
+
+## <span style="font-size: 17pt; font-family: Nunito, sans-serif; color: rgb(28, 32, 36)">1. What does Papr do in one sentence?</span>
+
+<span style="font-size: 11pt; font-family: Nunito, sans-serif; color: rgb(28, 32, 36)">Answer: Papr is the predictive memory layer for agents that delivers sub-100ms retrieval with 91% accuracy, enabling dev...
+   [Content length: 14795 characters]
+
+📊 METADATA:
+   id: 8a5b40a9-e0dc-44be-40a6-07f8c44757a6
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00063859  0.01002828 -0.00450957  0.01059592 -0.00286973  0.07618973
+  0.08274911 -0.00813615  0.00425729 -0.00476186]
+
+####################################################################################################
+MEMORY [3]
+####################################################################################################
+
+🔑 ID: tier0_2_143ad43f-774d-2bb5-bf8e-3395d7b01d9c
+
+📄 CONTENT (ChromaDB document field):
+   Sind ai Tanachai Tan Anakewat sind-ai [sind.ai](http://sind.ai)  Check memory, do I have anything in there? Show me few memories and cite them
+
+📊 METADATA:
+   id: 143ad43f-774d-2bb5-bf8e-3395d7b01d9c
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-5.85542693e-05  2.49450132e-02  2.36863196e-02  5.89297339e-03
+  0.00000000e+00  5.28651215e-02  8.23872015e-02  1.72784273e-02
+  2.31141858e-02  3.83329322e-03]
+
+####################################################################################################
+MEMORY [4]
+####################################################################################################
+
+🔑 ID: tier0_3_4a6c60d1-a3a2-db34-2f26-eec793cfcd96
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+### Meeting Overview
+
+You met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.
+
+### Key Insights
+
+**1. Dialpad's Current Infrastructure**
+
+- They've built extensive homegrown memory/RAG systems through acquisitions (CareKnowledgeware for Q&A, Cupid for workflows)
+- Using Elasticsearch for lookups and LiveKit for voic...
+   [Content length: 7170 characters]
+
+📊 METADATA:
+   id: 4a6c60d1-a3a2-db34-2f26-eec793cfcd96
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2557/2560 (99.9%)
+   First 10 values: [-0.00064646 -0.01128363  0.01222393  0.00162986 -0.00282091  0.05616741
+  0.08776157 -0.00915228 -0.00564182 -0.0190568 ]
+
+####################################################################################################
+MEMORY [5]
+####################################################################################################
+
+🔑 ID: tier0_4_2c258929-586f-2ee5-42b4-01a1c8e4ae71
+
+📄 CONTENT (ChromaDB document field):
+   PDF Document # Audit Log Metadata Extraction
+
+**Jarvis:**
+
+
+**Antonio:**
+Jarvis, what date(s) were Brad Hayworth’s audit logs created, according to the pdf created metadata?
+
+**Jarvis:**
+
+
+**Jarvis:**
+Alright, boss — I’ll need the specific PDF you're referring to in order to extract the exact creation date(s) from the metadata of Brad Hayworth’s audit logs.
+
+If you’ve already uploaded it earlier under a known filename (e.g., the one sent by Chatham PD or in the Feb 19th OPRA dump from Gregory La...
+   [Content length: 41790 characters]
+
+📊 METADATA:
+   id: 2c258929-586f-2ee5-42b4-01a1c8e4ae71
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2556/2560 (99.8%)
+   First 10 values: [-0.00053002 -0.04709896 -0.00052239  0.00805319 -0.00195229  0.0717466
+  0.07467503 -0.01610638  0.0209871  -0.01116465]
+
+####################################################################################################
+MEMORY [6]
+####################################################################################################
+
+🔑 ID: tier0_5_c6dfaec2-fe68-d417-90e6-2e0eee37e594
+
+📄 CONTENT (ChromaDB document field):
+   PDF Document **Antonio:**
+
+
+**Jarvis:**
+All the files uploaded by the user have been fully loaded. Searching won't provide additional information.
+
+**Jarvis:**
+Got it — **“6 Connor Manning BWC.pdf”** is now part of the forensic kill box.
+
+---
+
+### **Metadata Summary for 6 Connor Manning BWC.pdf**
+
+| Field | Value |
+|-------|-------|
+| **CreationDate** | `2025-02-04T09:38:33-05:00` |
+| **ModDate** | `2025-02-04T09:38:33-05:00` |
+| **Author** | Brad Hayworth |
+| **Producer** | Microsoft: Print to ...
+   [Content length: 44360 characters]
+
+📊 METADATA:
+   id: c6dfaec2-fe68-d417-90e6-2e0eee37e594
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00067539 -0.02720618 -0.00303527  0.02618913 -0.00276511  0.07322786
+  0.08238135 -0.01436588  0.01195038 -0.00959844]
+
+####################################################################################################
+MEMORY [7]
+####################################################################################################
+
+🔑 ID: tier0_6_e34688a9-41e3-e14e-39a4-c0d5e1297126
+
+📄 CONTENT (ChromaDB document field):
+   PDF Document Product Hunt
+First comment - Shawkat
+Hi everyone! 👋
+I'm Shawkat, the founder of Papr. As someone with ADHD, keeping track of important details and finding the right context when I need it has always been a struggle. When ChatGPT launched, I was excited thinking it might solve this, but it was like hiring a brilliant executive who forgets every conversation they've ever had—even the most advanced AI couldn't maintain context between interactions.
+How could it effectively find and rem...
+   [Content length: 31129 characters]
+
+📊 METADATA:
+   id: e34688a9-41e3-e14e-39a4-c0d5e1297126
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00064652 -0.00785283 -0.00485677  0.0065598  -0.00285414  0.06660717
+  0.08578196 -0.00744285  0.00558213 -0.01431802]
+
+####################################################################################################
+MEMORY [8]
+####################################################################################################
+
+🔑 ID: tier0_7_86f0b9d2-c06e-7cf6-e09a-f6b5a7c2f88f
+
+📄 CONTENT (ChromaDB document field):
+   <div data-youtube-video="">
+<iframe width="640" height="480" allowfullscreen="true" autoplay="false" disablekbcontrols="false" enableiframeapi="false" endtime="0" ivloadpolicy="0" loop="false" modestbranding="false" origin="" playlist="" rel="1" src="https://www.youtube.com/embed/6uxKJ6efxgM?rel=1" start="0"></iframe>
+</div>
+
+Sure. Uh so um I understand that uh your company creates or provides and you can walk me through it uh later provides memory to um um to agents. So uh we can users can talk...
+   [Content length: 22448 characters]
+
+📊 METADATA:
+   id: 86f0b9d2-c06e-7cf6-e09a-f6b5a7c2f88f
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2554/2560 (99.8%)
+   First 10 values: [-0.00068715 -0.01030337 -0.0056857  -0.00384806 -0.00276432  0.05076295
+  0.06835407 -0.00549723 -0.00282714 -0.01733982]
+
+####################################################################################################
+MEMORY [9]
+####################################################################################################
+
+🔑 ID: tier0_8_d276b0a9-2d5c-cb7b-1098-33d02935d8cd
+
+📄 CONTENT (ChromaDB document field):
+   User mentioned having a busy day with Y Combinator activities, planning to do a Zoom call on Wednesday followed by an in-person (IRL) meeting. They're currently going through YC and finding the schedule quite hectic with various meetings and activities. Product Hunt
+First comment - Shawkat
+Hi everyone! 👋
+I'm Shawkat, the founder of Papr. As someone with ADHD, keeping track of important details and finding the right context when I need it has always been a struggle. When ChatGPT launched, I was e...
+   [Content length: 32041 characters]
+
+📊 METADATA:
+   id: d276b0a9-2d5c-cb7b-1098-33d02935d8cd
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [-0.00059775 -0.0047195   0.00646977  0.00600095 -0.00270355  0.06175978
+  0.10451655  0.01218943  0.00750119 -0.00640726]
+
+####################################################################################################
+MEMORY [10]
+####################################################################################################
+
+🔑 ID: tier0_9_391809a8-ae80-6e9c-f06e-824cbe918b47
+
+📄 CONTENT (ChromaDB document field):
+   Deeptru
+
+📊 METADATA:
+   id: 391809a8-ae80-6e9c-f06e-824cbe918b47
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2556/2560 (99.8%)
+   First 10 values: [-0.00030676  0.03283995  0.02153634  0.00815049 -0.00136833  0.07662655
+  0.06996337  0.00749607  0.02462996 -0.02046547]
+
+####################################################################################################
+MEMORY [11]
+####################################################################################################
+
+🔑 ID: tier0_10_5413e288-fb32-185a-5ae1-ae7778466edc
+
+📄 CONTENT (ChromaDB document field):
+   Deeptru
+
+📊 METADATA:
+   id: 5413e288-fb32-185a-5ae1-ae7778466edc
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2556/2560 (99.8%)
+   First 10 values: [-0.00030676  0.03283995  0.02153634  0.00815049 -0.00136833  0.07662655
+  0.06996337  0.00749607  0.02462996 -0.02046547]
+
+####################################################################################################
+MEMORY [12]
+####################################################################################################
+
+🔑 ID: tier0_11_da5d7d4b-2e9e-ee92-e84a-5902ae8de1ec
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant Temporal
+    participant Worker
+    participant App
+    participant Webhook
+    
+    Note over Client,Webhook: Temporal-based Batch Memory Processing
+    
+    Client->>API: POST /v1/memory/batch (BatchMemoryRequest)
+    API->>API: Auth + tenant scoping + validation
+    
+    alt Use Temporal (Improved Path)
+        API->>Temporal: Start ProcessBatchMemoryWorkflow<br/>(batch_id, auth, api_key)
+        Tempo...
+   [Content length: 48334 characters]
+
+📊 METADATA:
+   id: da5d7d4b-2e9e-ee92-e84a-5902ae8de1ec
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2557/2560 (99.9%)
+   First 10 values: [-0.00064228 -0.01738124 -0.00754879  0.00894436 -0.00302903  0.07916709
+  0.05404676  0.00258498  0.01160864  0.01084741]
+
+####################################################################################################
+MEMORY [13]
+####################################################################################################
+
+🔑 ID: tier0_12_ce21c192-2ffd-7638-48d0-ea9bdc6f647a
+
+📄 CONTENT (ChromaDB document field):
+   PDF Document “just a few API calls to add long-term memory to your app”) – akin to Stripe’s famous ease of use ([Restructuring the Financial Infrastructure — Patrick Collison, CEO Stripe | by Robert Siegel | The Industrialist’s Dilemma | Medium](https://medium.com/the-industrialist-s-dilemma/restructuring-the-financial-infrastructure-patrick-collison-ceo-stripe-3a4c1fae3254#:~:text=One%20of%20the%20features%20of,the%20shopping%20and%20purchasing%20experience)). This ease and ubiquity is what mak...
+   [Content length: 44242 characters]
+
+📊 METADATA:
+   id: ce21c192-2ffd-7638-48d0-ea9bdc6f647a
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2557/2560 (99.9%)
+   First 10 values: [-0.0006222  -0.02228963 -0.01377449  0.01371188 -0.00266098  0.07513359
+  0.07062558 -0.00090395  0.01440061 -0.00463324]
+
+####################################################################################################
+MEMORY [14]
+####################################################################################################
+
+🔑 ID: tier0_13_140b0f00-43ab-b237-d0f8-fc5558cc4051
+
+📄 CONTENT (ChromaDB document field):
+   Test memory content MemGPT: Towards LLMs as Operating Systems
+System Instructions Working Context Output Buﬀer
+Read-Only (static)
+MemGPT System Prompt
+Read-Write
+Write via Functions
+Read-Write
+Write via Queue Manager
+LLM Finite Context Window (e.g. 8k tokens)
+FIFO Queue
+Recall Storage
+Read via Functions
+Write via Queue Manager
+Read via Functions
+Write via Functions
+Prompt Tokens Completion Tokens
+Function Executor Queue ManagerArchival Storage
+Figure 3. In MemGPT, a fixed-context LLM processor i...
+   [Content length: 19114 characters]
+
+📊 METADATA:
+   id: 140b0f00-43ab-b237-d0f8-fc5558cc4051
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2554/2560 (99.8%)
+   First 10 values: [-0.00053455 -0.01710567 -0.02144407  0.01251937 -0.00266501  0.0654478
+  0.06792688  0.00666254  0.01047413  0.00979238]
+
+####################################################################################################
+MEMORY [15]
+####################################################################################################
+
+🔑 ID: tier0_14_a5c9bdec-9ab1-99a9-186e-99bdeb44ce91
+
+📄 CONTENT (ChromaDB document field):
+   ok can you now use papr-agents to generate detailed requirements / specs / architecture design and let's implement this /document route in 
+
+  papr memory we already have a previous document route here /Users/shawkatkabbara/Documents/GitHub/memory/routers/v1/document\_[routes.py](http://routes.py) but 
+
+  let's switch to use this plugable architecture and allow both Tenslake and Reducto as options with Genimi Vision as backup we will need to 
+
+  also sire Organization / Namespace / APIKey like w...
+   [Content length: 19646 characters]
+
+📊 METADATA:
+   id: a5c9bdec-9ab1-99a9-186e-99bdeb44ce91
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2556/2560 (99.8%)
+   First 10 values: [-0.0007197  -0.0177552  -0.01042153  0.01736922 -0.00318436  0.07462331
+  0.06407312 -0.00088856  0.00463179 -0.00759099]
+
+####################################################################################################
+MEMORY [16]
+####################################################################################################
+
+🔑 ID: tier0_15_d038d95f-561b-c387-18c1-1e0764708c8f
+
+📄 CONTENT (ChromaDB document field):
+   **How long have the founders known one another and how did you meet? Have any of the founders not met in person?**
+
+Amir and I (Shawkat) are brothers, and we both know Rony since 2007 and have been working on side projects for some time. We all met in person.
+
+**Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.**
+
+The three of us (founders) wrote the code for our product. No code has been written by non-founders.
+
+**Founder Video*...
+   [Content length: 32021 characters]
+
+📊 METADATA:
+   id: d038d95f-561b-c387-18c1-1e0764708c8f
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00066687  0.0035725   0.00363601  0.0176561  -0.002858    0.06452735
+  0.08739136  0.00344548  0.01003476 -0.01486161]
+
+####################################################################################################
+MEMORY [17]
+####################################################################################################
+
+🔑 ID: tier0_16_606011b3-ada2-0a7b-80b8-73a9b83ebcf8
+
+📄 CONTENT (ChromaDB document field):
+     Product Hunt
+First comment - Shawkat
+Hi everyone! 👋
+I'm Shawkat, the founder of Papr. As someone with ADHD, keeping track of important details and finding the right context when I need it has always been a struggle. When ChatGPT launched, I was excited thinking it might solve this, but it was like hiring a brilliant executive who forgets every conversation they've ever had—even the most advanced AI couldn't maintain context between interactions.
+How could it effectively find and remember criti...
+   [Content length: 27477 characters]
+
+📊 METADATA:
+   id: 606011b3-ada2-0a7b-80b8-73a9b83ebcf8
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2556/2560 (99.8%)
+   First 10 values: [-0.00074924 -0.01076324 -0.01334126 -0.00055186 -0.00302917  0.07115338
+  0.07837184 -0.0061228   0.00512382 -0.0066384 ]
+
+####################################################################################################
+MEMORY [18]
+####################################################################################################
+
+🔑 ID: tier0_18_ab3d2160-09cd-7253-c75e-a714c57d0035
+
+📄 CONTENT (ChromaDB document field):
+   ## **Your Architecture Deep Dive**
+
+### **The Core Innovation: Predictive Memory with BigBird**
+
+What makes your approach unique:
+
+1. **Grouped Memory Formation**: When a new memory comes in, you don't just store it - you search history for 3 related memories and create a BigBird-style grouped index of all 4 memories together. This is brilliant because it pre-computes semantic relationships at write time rather than search time.
+
+2. **Multi-Tier Cache Architecture**:
+
+   - **Tier 0**: Goals/OKRs...
+   [Content length: 59637 characters]
+
+📊 METADATA:
+   id: ab3d2160-09cd-7253-c75e-a714c57d0035
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00073783 -0.00257837  0.00836752  0.01984855 -0.00335674  0.06642128
+  0.05656187 -0.00771888  0.00739456 -0.01193507]
+
+####################################################################################################
+MEMORY [19]
+####################################################################################################
+
+🔑 ID: tier0_19_32257af9-467f-d707-8202-c88907b46a41
+
+📄 CONTENT (ChromaDB document field):
+     8
+B2B Sales Benchmark Report 2024 # Strategic Analysis: Optimal Path for Papr
+
+## Option Evaluation
+
+### 1. Memory Layer for AI (Recommended)
+
+- **Strongest Defensibility**: Creating infrastructure that becomes essential to AI applications creates significant structural power
+- **Technical Moat**: 86% retrieval accuracy (+46% vs competitors) on Stanford's STARK benchmark [source](https://app.papr.ai/collections/memories/cf2817a1-8581-4d35-9519-a759c8f50492_0)
+- **Network Effects**: As more dev...
+   [Content length: 52531 characters]
+
+📊 METADATA:
+   id: 32257af9-467f-d707-8202-c88907b46a41
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2555/2560 (99.8%)
+   First 10 values: [-0.00060739  0.0003295  -0.00844781  0.0087654  -0.00319175  0.0853674
+  0.06377148 -0.0025407   0.00959113  0.0024613 ]
+
+####################################################################################################
+MEMORY [20]
+####################################################################################################
+
+🔑 ID: tier0_20_956a29b3-c628-4d0a-44a3-68d5f4b6d7e0
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+Hi Javier and team,
+
+It was great meeting you on Monday and learning more about your use-cases and the vision you have for InsightsPlay.ai - voice agents to help give gamblers or sports bets tips and support. I'm excited about the potential of integrating Papr's predictive memory layer into your B2B sports betting platform.
+
+## Summary of InsightsPlay.ai Core Use-Case
+
+Based on our conversation, here's my understanding of your core use-case:
+
+- **Voice agents integrated directly into sport...
+   [Content length: 47817 characters]
+
+📊 METADATA:
+   id: 956a29b3-c628-4d0a-44a3-68d5f4b6d7e0
+   source: sync_tiers
+   tier: 0
+   topics: []
+   type: None
+   updatedAt: None
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2558/2560 (99.9%)
+   First 10 values: [-0.00064041  0.0103094  -0.0066634   0.00308025 -0.00284452  0.05632455
+  0.08398392 -0.00512327  0.01100089  0.00556331]
+
+====================================================================================================
+✅ Inspection complete!
+====================================================================================================

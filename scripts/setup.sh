@@ -3,6 +3,10 @@
 
 set -e
 
+# Get script directory and change to project root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR/.."
+
 echo "🚀 Setting up PAPR Voice Demo..."
 
 # Check if Python 3 is installed
@@ -23,10 +27,10 @@ fi
 echo "🔧 Activating virtual environment..."
 source venv/bin/activate
 
-# Install dependencies
+# Install dependencies from new location
 echo "📥 Installing dependencies..."
 pip install -q --upgrade pip
-pip install -q -r requirements.txt
+pip install -q -r src/python/requirements.txt
 
 # Check for .env file
 if [ ! -f ".env" ]; then
@@ -44,5 +48,5 @@ echo "   - OPENAI_API_KEY (from platform.openai.com)"
 echo "   - PAPR_MEMORY_API_KEY (from dashboard.papr.ai)"
 echo ""
 echo "2. Run the demo:"
-echo "   ./run.sh"
+echo "   ./scripts/run.sh"
 echo ""

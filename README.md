@@ -4,43 +4,115 @@ Real-time voice conversation with on-device memory retrieval, showcasing the spe
 
 ## ✨ Features
 
-- **🎤 Voice Input** - OpenAI Realtime API for natural voice conversations (implementation ready)
-- **⚡ On-Device Processing** - CoreML-accelerated embeddings with PAPR Python SDK
-- **📊 Real-time Metrics** - Live display of query processing and retrieval speed
-- **🔍 Citation Verification** - Click any memory to verify source and full content
-- **📈 Performance Dashboard** - Track average latency and query statistics
+- **🎤 Voice Input** - OpenAI Realtime API for natural voice conversations with Constellation UI
+- **⚡ On-Device Processing** - CoreML-accelerated embeddings with PAPR Python SDK (<100ms latency)
+- **🌟 Constellation Visualization** - Interactive particle system showing search history
+- **📊 Real-time Metrics** - Live display of query processing and retrieval speed with latency breakdown
+- **🔍 Citation Verification** - Click any constellation point to see retrieved memories
+- **📈 Performance Dashboard** - Track embedding, search, and total latency per query
 
-## 🚀 Quick Start (5 minutes)
+## 📁 Project Structure
 
-### 1. Setup
+```
+papr-voice-demo/
+├── README.md                  # This file
+├── voice.html                 # Constellation UI frontend
+├── docs/                      # Documentation
+│   ├── TESTING.md            # Comprehensive testing guide
+│   ├── DEMO_GUIDE.md         # Demo presentation guide
+│   ├── QUICK_START.md        # Quick start guide
+│   └── RUN_CONSTELLATION.md  # Constellation UI guide
+├── src/
+│   ├── python/               # Python microservice (CoreML + Flask)
+│   │   ├── voice_server.py   # Flask server with CoreML embeddings
+│   │   └── tool_schemas.py   # Pydantic schemas for validation
+│   └── server/               # TypeScript backend (Fastify + Pipecat)
+│       ├── src/
+│       │   ├── index.ts      # Main Fastify server
+│       │   ├── services/     # Service layer (PaprMemoryService)
+│       │   └── types/        # TypeScript type definitions
+│       ├── package.json      # Node.js dependencies
+│       └── tsconfig.json     # TypeScript configuration
+├── scripts/                   # Utility scripts
+│   ├── dev.sh                # Start both Python + TypeScript servers
+│   ├── test.sh               # Run all tests (Python + TypeScript)
+│   ├── setup-poetry.sh       # Setup Poetry environment
+│   ├── warmup_model.py       # Preload CoreML model
+│   ├── resource_check.py     # Check system resources
+│   └── cleanup_memory.sh     # Clean up memory
+├── tests/                     # Python tests
+│   ├── test_tool_schemas.py  # Pydantic validation tests (17 tests)
+│   └── test_voice_server.py  # Flask endpoint tests (21 tests)
+└── pyproject.toml            # Poetry configuration
+```
+
+## 🚀 Quick Start
+
+### 1. Easy Setup with Script
 
 ```bash
 cd papr-voice-demo
-chmod +x setup.sh run.sh
-./setup.sh
+
+# Run setup script (creates venv, installs deps, copies .env)
+./scripts/setup.sh
+
+# Edit .env and add your API keys
+nano .env
 ```
 
-### 2. Configure API Keys
+### 2. Check System Resources (Recommended)
+
+Before enabling on-device processing, check if your system has enough resources:
+
+```bash
+# Activate venv first
+source venv/bin/activate
+
+# Check resources
+python scripts/resource_check.py
+```
+
+This will check:
+- **Disk Space**: Need 30GB+ free for CoreML compilation
+- **RAM**: Need 6GB+ available for model runtime
+- **Memory Pressure**: Should be <85%
+
+The script will recommend either on-device or API backend processing.
+
+### 3. Configure API Keys
 
 Edit `.env` file:
 
 ```bash
 OPENAI_API_KEY=sk-...
 PAPR_MEMORY_API_KEY=papr_...
-PAPR_ONDEVICE_PROCESSING=true
+
+# Set based on resource_check.py recommendation:
+PAPR_ONDEVICE_PROCESSING=true  # or false if insufficient resources
+
+# If using on-device:
+PAPR_ENABLE_COREML=true
+PAPR_COREML_MODEL=/path/to/Qwen3-Embedding-4B-FP16-Final.mlpackage
 ```
 
 Get your keys:
 - OpenAI: https://platform.openai.com/api-keys
 - PAPR: https://dashboard.papr.ai
 
-### 3. Run
+### 4. Run Voice Server
 
 ```bash
-./run.sh
+# Make sure venv is activated
+source venv/bin/activate
+
+# Run the server
+./scripts/run.sh
+
+# Or manually:
+# python src/python/voice_server.py
 ```
 
-The app will open in your browser at http://localhost:8501
+Open http://localhost:3000 in your browser
 
 ## 📱 Demo Flow
 
@@ -69,29 +141,34 @@ The app will open in your browser at http://localhost:8501
 
 ## 🛠️ Architecture
 
+**Current (Phase 1): Python + HTML**
 ```
-┌─────────────┐
-│   Voice     │
-│   Input     │ ← OpenAI Realtime API
-└──────┬──────┘
-       │
-       v
-┌─────────────────────┐
-│   Query Processing   │
-│   (Streamlit UI)     │
-└──────┬──────────────┘
-       │
-       v
-┌─────────────────────┐
-│  PAPR Python SDK     │
-│  On-Device Search    │ ← CoreML Embeddings
-└──────┬──────────────┘
-       │
-       v
-┌─────────────────────┐
-│  Memory Retrieval    │
-│  + Speed Metrics     │
-└─────────────────────┘
+Browser (voice.html)
+    ↓ WebSocket
+OpenAI Realtime API + Constellation UI
+    ↓ HTTP POST
+Python Flask Server (:3000)
+    ↓ Direct call (in-process)
+PAPR Python SDK
+    ↓ Direct call (in-process)
+CoreML Embeddings (on-device, 50-75ms)
+    ↓ Direct call (in-process)
+ChromaDB Vector Search (local, 20-30ms)
+```
+
+**Planned (Phase 5): TypeScript + Pipecat + Python Microservice**
+```
+Browser (voice.html → React)
+    ↓ WebSocket/WebRTC
+TypeScript/Fastify Server (:3000) + Pipecat
+    ↓ HTTP call (localhost, ~1-5ms)
+Python Flask/FastAPI Microservice (:3001)
+    ↓ Direct call (in-process)
+CoreML Embeddings (on-device, 50-75ms) ← STAYS IN PYTHON FOR PERFORMANCE
+    ↓ Direct call (in-process)
+ChromaDB Vector Search (local, 20-30ms)
+
+Total latency: ~80-110ms (within <100ms target!)
 ```
 
 ## 📊 Demo Talking Points
@@ -147,6 +224,7 @@ Edit `app.py` to adjust:
 ## 🆘 Troubleshooting
 
 **"ModuleNotFoundError: No module named 'papr_memory'"**
+- Activate virtual environment: `source venv/bin/activate`
 - Ensure papr-pythonSDK is at `~/Documents/GitHub/papr-pythonSDK/`
 - Or install via: `pip install papr-memory`
 
@@ -155,10 +233,26 @@ Edit `app.py` to adjust:
 - Check that you have memories indexed in your account
 - Try a broader query
 
-**"Slow retrieval times"**
-- Ensure PAPR_ONDEVICE_PROCESSING=true
-- Check that CoreML models are installed
-- First query may be slower (model loading)
+**"Slow retrieval times (>2 seconds)"**
+- **Root Cause**: CoreML falling back to CPU instead of using Neural Engine (ANE)
+- **Check Disk Space**: CoreML needs 30-50GB free for ANE compilation
+  ```bash
+  df -h /  # Should show >30GB available
+  ```
+- **Symptoms**:
+  - Logs show "Model: Qwen3-4B on cpu" instead of ANE
+  - Embedding generation takes 2-3 seconds instead of 50-100ms
+  - "LLVM ERROR: IO failure on output stream: No space left on device"
+- **Solutions**:
+  1. Free up disk space (delete old files, Xcode cache, Docker images)
+  2. Check `PAPR_ONDEVICE_PROCESSING=true` in `.env`
+  3. First query may be slower (model loading, should be <5 minutes)
+  4. If disk space < 30GB, set `PAPR_ONDEVICE_PROCESSING=false` to use API backend
+
+**"Memory pressure warnings"**
+- CoreML models use 4-6GB RAM
+- Close other memory-intensive apps
+- Consider using API backend if RAM < 8GB available
 
 ## 📄 License
 
