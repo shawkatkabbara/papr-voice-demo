@@ -1,0 +1,542 @@
+{
+  "tier": "tier1",
+  "timestamp": "20251122_082710",
+  "total_items": 200,
+  "items_logged": 20,
+  "items": [
+    {
+      "index": 0,
+      "id": "CArWG7Gh9H",
+      "type": "TextMemoryItem",
+      "content": "Sind ai Tanachai Tan Anakewat sind-ai [sind.ai](http://sind.ai)",
+      "content_length": 63,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T22:22:08.780Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 1,
+      "id": "6Gwu0aeiW3",
+      "type": "TextMemoryItem",
+      "content": "<div data-youtube-video=\"\">\n<iframe width=\"640\" height=\"480\" allowfullscreen=\"true\" autoplay=\"false\" disablekbcontrols=\"false\" enableiframeapi=\"false\" endtime=\"0\" ivloadpolicy=\"0\" loop=\"false\" modestbranding=\"false\" origin=\"\" playlist=\"\" rel=\"1\" src=\"https://www.youtube.com/embed/6uxKJ6efxgM?rel=1\" start=\"0\"></iframe>\n</div>",
+      "content_length": 326,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T19:29:20.016Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 2,
+      "id": "rVSCDbCyhx",
+      "type": "TextMemoryItem",
+      "content": "**How long have the founders known one another and how did you meet? Have any of the founders not met in person?**\n\nAmir and I (Shawkat) are brothers, and we both know Rony since 2007 and have been working on side projects for some time. We all met in person.\n\n**Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.**\n\nThe three of us (founders) wrote the code for our product. No code has been written by non-founders.\n\n**Founder Video*",
+      "content_length": 14889,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "founders",
+        "team",
+        "product development",
+        "revenue",
+        "growth"
+      ],
+      "updatedAt": "2025-11-21T22:25:30.112Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 3,
+      "id": "fL9dJE8DTH",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.474Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 4,
+      "id": "hxeODxfwer",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T17:22:11.915Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 5,
+      "id": "e25xnkyrlu",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.479Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 6,
+      "id": "vvj9mdsAFt",
+      "type": "TextMemoryItem",
+      "content": "Sind ai Tanachai Tan Anakewat sind-ai [sind.ai](http://sind.ai) \n\nAppreciate it. Awesome. Um, you know, you know, Tan, maybe we can just do super quick intros. I know we met uh a while back, but let's just quick intros and then would love to learn a little bit more about what you're building. Um, and I can share what we're building in in paper and see if it's something that that's interesting to you. Yeah, sure. I can I can introduce you a little bit about uh myself. My name is Tan and CTO of co",
+      "content_length": 14862,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.485Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 7,
+      "id": "6I0pdGSnW2",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T17:22:11.881Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 8,
+      "id": "foAhQq25Jr",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.264Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 9,
+      "id": "0ZS0ucHDa8",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.263Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 10,
+      "id": "xS9NmFakuu",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.275Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 11,
+      "id": "Za7BhV0qab",
+      "type": "TextMemoryItem",
+      "content": "\u23fa **Investor Update Rating Framework & Evaluation** \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0 09:14 AM\u00a0 claude-sonnet-4-5-20250929\n\n\u00a0 Based on YC, Mercury, TechCrunch, and [Visible.vc](http://Visible.vc) best practices research:\n\n\u00a0 ---\n\n\u00a0 **RATING: 8.2/10 \u2b50\u2b50\u2b50\u2b50 (Very Good - Minor Improvements Needed)**\n\n\u00a0 ---\n\n\u00a0 **Detailed Scoring Breakdown:**\n\n\u00a0 \u2705 **Strengths ",
+      "content_length": 14185,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "investor update",
+        "evaluation",
+        "feedback",
+        "performance metrics"
+      ],
+      "updatedAt": "2025-11-21T17:05:19.658Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 12,
+      "id": "FmIs2oNgsU",
+      "type": "TextMemoryItem",
+      "content": "<div data-youtube-video=\"\">\n<iframe width=\"640\" height=\"480\" allowfullscreen=\"true\" autoplay=\"false\" disablekbcontrols=\"false\" enableiframeapi=\"false\" endtime=\"0\" ivloadpolicy=\"0\" loop=\"false\" modestbranding=\"false\" origin=\"\" playlist=\"\" rel=\"1\" src=\"https://www.youtube.com/embed/6uxKJ6efxgM?rel=1\" start=\"0\"></iframe>\n</div>\n\nSure. Uh so um I understand that uh your company creates or provides and you can walk me through it uh later provides memory to um um to agents. So uh we can users can talk",
+      "content_length": 14940,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.289Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 13,
+      "id": "kjkzfW3zq2",
+      "type": "TextMemoryItem",
+      "content": "<span data-ids=\"\" style=\"\">---</span>\n\n### <span data-ids=\"\" style=\"\">Meeting Overview</span>\n\n<span data-ids=\"\" style=\"\">You met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.</span>\n\n### <span data-ids=\"\" style=\"\">Key Insights</span>\n\n**<span data-ids=\"\" style=\"\">1. Dialpad's Current Infrastructure</span>**\n\n- <span da",
+      "content_length": 4166,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "Dialpad",
+        "AI agents",
+        "memory management",
+        "predictive architecture",
+        "integration opportunities"
+      ],
+      "updatedAt": "2025-11-21T17:05:19.364Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 14,
+      "id": "20RkecvnVx",
+      "type": "TextMemoryItem",
+      "content": "We have like predicted goals, predicted tasks, and we can actually also include like learnings that the agent learned uh that's specific to the user that's using. Yeah. And then episodic is more like a citation hit. So a citation hit, it's kind of like a cache hit, but it's like when the agent retrieves a memory and then the memory is cited in the answer and then the user liked the answer, we like increase the ranking of that and and make it a citation hits. a citation hit. Um, so that then is s",
+      "content_length": 11381,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-19T22:18:12.643Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 15,
+      "id": "vJKUcs2AZu",
+      "type": "TextMemoryItem",
+      "content": "\\---\n\n**What is your company going to make? Please describe your product and what it does or will do.**\n\nPapr builds predictive memory for voice agents. Voice AI forgets everything between calls and can't retrieve context fast enough\u2014adding 500ms+ latency when users expect &lt;150ms responses. They hang up.\n\nWe're a developer API that gives voice agents instant memory with:\n\n- **&lt;100ms retrieval** (vs 500ms+ for RAG)\n- **91% accuracy** (#1 on Stanford STARK)\n- **Unified memory layer**: RAG + ",
+      "content_length": 933,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "voice technology",
+        "AI",
+        "predictive memory",
+        "voice agents"
+      ],
+      "updatedAt": "2025-11-19T17:07:51.367Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 16,
+      "id": "F9Ug8rjpQo",
+      "type": "TextMemoryItem",
+      "content": "So Redu is the one that we recommend because they have the highest like OCR like the best like OCR models. But you know if you if you add a PDF document we go through and we do the OCR and then we transform that into like batch of memories and then we use the add memory API to add this to to memory here. Um and then the nice thing with the document endpoint that allows you to do you know like uploads to documents is that if if if you have the document ID you can go back and like if you have a ne",
+      "content_length": 13987,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T17:05:19.357Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 17,
+      "id": "WkUfeCGp4a",
+      "type": "TextMemoryItem",
+      "content": "",
+      "content_length": 0,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-21T18:11:08.259Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt"
+      ],
+      "content_is_empty": true
+    },
+    {
+      "index": 18,
+      "id": "BIROTYpdsj",
+      "type": "TextMemoryItem",
+      "content": "\\---\n\n### Meeting Overview\n\nYou met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.\n\n### Key Insights\n\n**1. Dialpad's Current Infrastructure**\n\n- They've built extensive homegrown memory/RAG systems through acquisitions (CareKnowledgeware for Q&A, Cupid for workflows)\n- Using Elasticsearch for lookups and LiveKit for voic",
+      "content_length": 2603,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-20T18:31:48.304Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    },
+    {
+      "index": 19,
+      "id": "Sa9CWhPEpS",
+      "type": "TextMemoryItem",
+      "content": "\\---\n\n**What is your company going to make? Please describe your product and what it does or will do.**\n\nPapr is building the predictive memory layer for voice agents that enables real-time, context-aware conversations at scale.\n\nVoice agents today suffer from a critical flaw: they forget everything between conversations and can't retrieve context fast enough to feel natural. Traditional RAG solutions add 500ms+ latency, breaking the sub-150ms response time requirement for voice interactions\u2014cau",
+      "content_length": 1978,
+      "has_embedding": false,
+      "embedding_dimension": 0,
+      "metadata": {},
+      "topics": [
+        "meeting",
+        "tasks",
+        "progress",
+        "team"
+      ],
+      "updatedAt": "2025-11-19T15:39:59.525Z",
+      "raw_keys": [
+        "id",
+        "content",
+        "type",
+        "topics",
+        "metadata",
+        "updatedAt",
+        "embedding_int8"
+      ],
+      "content_is_empty": false
+    }
+  ]
+}

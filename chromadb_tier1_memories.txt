@@ -1,0 +1,598 @@
+====================================================================================================
+TIER1 MEMORIES FROM CHROMADB
+Total in collection: 182
+====================================================================================================
+
+####################################################################################################
+TIER1 MEMORY [1]
+####################################################################################################
+
+🔑 ID: tier1_CArWG7Gh9H
+
+📄 CONTENT (ChromaDB document field):
+   Sind ai Tanachai Tan Anakewat sind-ai [sind.ai](http://sind.ai)
+
+📊 METADATA:
+   id: CArWG7Gh9H
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T22:22:08.780Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.28222656 -0.02775574 -0.02218628  0.04501343  0.74462891  0.00176907
+ -0.00802612 -0.02006531 -0.00541306  0.02253723]
+
+####################################################################################################
+TIER1 MEMORY [2]
+####################################################################################################
+
+🔑 ID: tier1_6Gwu0aeiW3
+
+📄 CONTENT (ChromaDB document field):
+   <div data-youtube-video="">
+<iframe width="640" height="480" allowfullscreen="true" autoplay="false" disablekbcontrols="false" enableiframeapi="false" endtime="0" ivloadpolicy="0" loop="false" modestbranding="false" origin="" playlist="" rel="1" src="https://www.youtube.com/embed/6uxKJ6efxgM?rel=1" start="0"></iframe>
+</div>
+
+📊 METADATA:
+   id: 6Gwu0aeiW3
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T19:29:20.016Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.27099609 -0.06298828  0.00888824  0.03591919  0.67382812  0.00741577
+ -0.00283241 -0.09716797  0.00704193  0.00938416]
+
+####################################################################################################
+TIER1 MEMORY [3]
+####################################################################################################
+
+🔑 ID: tier1_rVSCDbCyhx
+
+📄 CONTENT (ChromaDB document field):
+   **How long have the founders known one another and how did you meet? Have any of the founders not met in person?**
+
+Amir and I (Shawkat) are brothers, and we both know Rony since 2007 and have been working on side projects for some time. We all met in person.
+
+**Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.**
+
+The three of us (founders) wrote the code for our product. No code has been written by non-founders.
+
+**Founder Video*
+   [Content length: 14889 characters]
+
+📊 METADATA:
+   id: rVSCDbCyhx
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['founders', 'team', 'product development', 'revenue', 'growth']
+   updatedAt: 2025-11-21T22:25:30.112Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.35253906 -0.05523682  0.00442505  0.052948    0.66796875  0.00226021
+ -0.00599289 -0.02626038  0.01785278  0.07849121]
+
+####################################################################################################
+TIER1 MEMORY [4]
+####################################################################################################
+
+🔑 ID: tier1_vvj9mdsAFt
+
+📄 CONTENT (ChromaDB document field):
+   Sind ai Tanachai Tan Anakewat sind-ai [sind.ai](http://sind.ai) 
+
+Appreciate it. Awesome. Um, you know, you know, Tan, maybe we can just do super quick intros. I know we met uh a while back, but let's just quick intros and then would love to learn a little bit more about what you're building. Um, and I can share what we're building in in paper and see if it's something that that's interesting to you. Yeah, sure. I can I can introduce you a little bit about uh myself. My name is Tan and CTO of co
+   [Content length: 14862 characters]
+
+📊 METADATA:
+   id: vvj9mdsAFt
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T18:11:08.485Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.32641602 -0.02870178 -0.02372742  0.05206299  0.70410156  0.00230026
+ -0.00713348 -0.02276611 -0.00738144  0.02839661]
+
+####################################################################################################
+TIER1 MEMORY [5]
+####################################################################################################
+
+🔑 ID: tier1_Za7BhV0qab
+
+📄 CONTENT (ChromaDB document field):
+   ⏺ **Investor Update Rating Framework & Evaluation**                                                                                                                                                                                     09:14 AM  claude-sonnet-4-5-20250929
+
+  Based on YC, Mercury, TechCrunch, and [Visible.vc](http://Visible.vc) best practices research:
+
+  ---
+
+  **RATING: 8.2/10 ⭐⭐⭐⭐ (Very Good - Minor Improvements Needed)**
+
+  ---
+
+  **Detailed Scoring Breakdown:**
+
+  ✅ **Strengths 
+   [Content length: 14185 characters]
+
+📊 METADATA:
+   id: Za7BhV0qab
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['investor update', 'evaluation', 'feedback', 'performance metrics']
+   updatedAt: 2025-11-21T17:05:19.658Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.30322266 -0.03479004  0.00441742  0.05062866  0.71923828  0.02757263
+ -0.00815582 -0.04388428 -0.00162697  0.04403687]
+
+####################################################################################################
+TIER1 MEMORY [6]
+####################################################################################################
+
+🔑 ID: tier1_FmIs2oNgsU
+
+📄 CONTENT (ChromaDB document field):
+   <div data-youtube-video="">
+<iframe width="640" height="480" allowfullscreen="true" autoplay="false" disablekbcontrols="false" enableiframeapi="false" endtime="0" ivloadpolicy="0" loop="false" modestbranding="false" origin="" playlist="" rel="1" src="https://www.youtube.com/embed/6uxKJ6efxgM?rel=1" start="0"></iframe>
+</div>
+
+Sure. Uh so um I understand that uh your company creates or provides and you can walk me through it uh later provides memory to um um to agents. So uh we can users can talk
+   [Content length: 14940 characters]
+
+📊 METADATA:
+   id: FmIs2oNgsU
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T18:11:08.289Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.27099609 -0.06298828  0.00888824  0.03591919  0.67382812  0.00741577
+ -0.00283241 -0.09716797  0.00704193  0.00938416]
+
+####################################################################################################
+TIER1 MEMORY [7]
+####################################################################################################
+
+🔑 ID: tier1_kjkzfW3zq2
+
+📄 CONTENT (ChromaDB document field):
+   <span data-ids="" style="">---</span>
+
+### <span data-ids="" style="">Meeting Overview</span>
+
+<span data-ids="" style="">You met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.</span>
+
+### <span data-ids="" style="">Key Insights</span>
+
+**<span data-ids="" style="">1. Dialpad's Current Infrastructure</span>**
+
+- <span da
+   [Content length: 4166 characters]
+
+📊 METADATA:
+   id: kjkzfW3zq2
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['Dialpad', 'AI agents', 'memory management', 'predictive architecture', 'integration opportunities']
+   updatedAt: 2025-11-21T17:05:19.364Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.24963379 -0.03720093 -0.00487137  0.04907227  0.82666016  0.00338554
+  0.00125599 -0.06494141 -0.00341415  0.01345062]
+
+####################################################################################################
+TIER1 MEMORY [8]
+####################################################################################################
+
+🔑 ID: tier1_20RkecvnVx
+
+📄 CONTENT (ChromaDB document field):
+   We have like predicted goals, predicted tasks, and we can actually also include like learnings that the agent learned uh that's specific to the user that's using. Yeah. And then episodic is more like a citation hit. So a citation hit, it's kind of like a cache hit, but it's like when the agent retrieves a memory and then the memory is cited in the answer and then the user liked the answer, we like increase the ranking of that and and make it a citation hits. a citation hit. Um, so that then is s
+   [Content length: 11381 characters]
+
+📊 METADATA:
+   id: 20RkecvnVx
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-19T22:18:12.643Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.33618164 -0.03088379 -0.00134659  0.03585815  0.71826172  0.01211548
+ -0.00530624 -0.03186035  0.01211548  0.06811523]
+
+####################################################################################################
+TIER1 MEMORY [9]
+####################################################################################################
+
+🔑 ID: tier1_vJKUcs2AZu
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+**What is your company going to make? Please describe your product and what it does or will do.**
+
+Papr builds predictive memory for voice agents. Voice AI forgets everything between calls and can't retrieve context fast enough—adding 500ms+ latency when users expect &lt;150ms responses. They hang up.
+
+We're a developer API that gives voice agents instant memory with:
+
+- **&lt;100ms retrieval** (vs 500ms+ for RAG)
+- **91% accuracy** (#1 on Stanford STARK)
+- **Unified memory layer**: RAG + 
+   [Content length: 933 characters]
+
+📊 METADATA:
+   id: vJKUcs2AZu
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['voice technology', 'AI', 'predictive memory', 'voice agents']
+   updatedAt: 2025-11-19T17:07:51.367Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.3659668  -0.04785156 -0.00349808  0.05670166  0.640625   -0.00536728
+  0.00853729 -0.03710938 -0.02055359  0.05831909]
+
+####################################################################################################
+TIER1 MEMORY [10]
+####################################################################################################
+
+🔑 ID: tier1_F9Ug8rjpQo
+
+📄 CONTENT (ChromaDB document field):
+   So Redu is the one that we recommend because they have the highest like OCR like the best like OCR models. But you know if you if you add a PDF document we go through and we do the OCR and then we transform that into like batch of memories and then we use the add memory API to add this to to memory here. Um and then the nice thing with the document endpoint that allows you to do you know like uploads to documents is that if if if you have the document ID you can go back and like if you have a ne
+   [Content length: 13987 characters]
+
+📊 METADATA:
+   id: F9Ug8rjpQo
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T17:05:19.357Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.37573242 -0.03833008  0.005867    0.03344727  0.67773438  0.02365112
+ -0.01530457 -0.02705383  0.0027504   0.04919434]
+
+####################################################################################################
+TIER1 MEMORY [11]
+####################################################################################################
+
+🔑 ID: tier1_BIROTYpdsj
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+### Meeting Overview
+
+You met with Brian, Dialpad's CTO, to discuss Papr's predictive memory layer for AI agents. Dialpad is a major contact center company processing billions of minutes of conversations, currently building both voice and text AI agents.
+
+### Key Insights
+
+**1. Dialpad's Current Infrastructure**
+
+- They've built extensive homegrown memory/RAG systems through acquisitions (CareKnowledgeware for Q&A, Cupid for workflows)
+- Using Elasticsearch for lookups and LiveKit for voic
+   [Content length: 2603 characters]
+
+📊 METADATA:
+   id: BIROTYpdsj
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-20T18:31:48.304Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.38964844 -0.04159546 -0.01260376  0.05743408  0.73339844  0.00395203
+  0.00779343 -0.03970337  0.00729752  0.03747559]
+
+####################################################################################################
+TIER1 MEMORY [12]
+####################################################################################################
+
+🔑 ID: tier1_Sa9CWhPEpS
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+**What is your company going to make? Please describe your product and what it does or will do.**
+
+Papr is building the predictive memory layer for voice agents that enables real-time, context-aware conversations at scale.
+
+Voice agents today suffer from a critical flaw: they forget everything between conversations and can't retrieve context fast enough to feel natural. Traditional RAG solutions add 500ms+ latency, breaking the sub-150ms response time requirement for voice interactions—cau
+   [Content length: 1978 characters]
+
+📊 METADATA:
+   id: Sa9CWhPEpS
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-19T15:39:59.525Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.37011719 -0.04504395 -0.00582504  0.05657959  0.64746094 -0.00815582
+  0.00826263 -0.03543091 -0.02107239  0.05926514]
+
+####################################################################################################
+TIER1 MEMORY [13]
+####################################################################################################
+
+🔑 ID: tier1_C0ecYnEuCy
+
+📄 CONTENT (ChromaDB document field):
+   /
+
+📊 METADATA:
+   id: C0ecYnEuCy
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T18:11:08.272Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [-3.82995605e-02 -3.29017639e-04 -1.64794922e-03  2.80380249e-03
+  9.64355469e-01 -1.52397156e-03 -9.89913940e-04 -6.00337982e-04
+ -6.48021698e-04  5.81741333e-04]
+
+####################################################################################################
+TIER1 MEMORY [14]
+####################################################################################################
+
+🔑 ID: tier1_MSmYonJBDV
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+**Subject: Papr Memory for GM Cruise AI - Next Steps**
+
+Hi Lina and Collin,
+
+Thank you for the great conversation today about integrating Papr's predictive memory layer into your ML debugging pipelines.
+
+**Your Core Use Case:**
+
+- Storing agent learnings and GraphQL endpoint documentation as persistent memory
+- Enabling your MCP orchestrator agents to retrieve context dynamically instead of static files
+- Improving developer experience by remembering patterns, errors, and solutions across 
+   [Content length: 1476 characters]
+
+📊 METADATA:
+   id: MSmYonJBDV
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-20T18:31:48.308Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 2.78564453e-01 -5.25817871e-02 -2.15911865e-03  5.92346191e-02
+  6.64550781e-01  6.29043579e-03 -5.88417053e-04 -2.93579102e-02
+  9.54437256e-03  5.68542480e-02]
+
+####################################################################################################
+TIER1 MEMORY [15]
+####################################################################################################
+
+🔑 ID: tier1_bYUqAyH0WC
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+**What is your company going to make? Please describe your product and what it does or will do.**
+
+Papr builds the predictive memory layer for voice agents. Voice AI forgets everything between calls and can't retrieve context fast enough—adding 500ms+ latency when users expect &lt;150ms responses. They hang up.
+
+We're a developer API that gives voice agents instant memory with:
+
+1\. &lt;100ms edge on device retrieval (vs 500ms+ for RAG)
+
+2\. 91% accuracy (#1 on Stanford STARK)
+
+3\. Unified
+   [Content length: 3795 characters]
+
+📊 METADATA:
+   id: bYUqAyH0WC
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['product development', 'voice AI', 'memory layer', 'developer API', 'partnerships']
+   updatedAt: 2025-11-20T18:31:48.299Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.36303711 -0.04870605 -0.00430679  0.05673218  0.63818359 -0.00614548
+  0.00721741 -0.03585815 -0.02253723  0.05807495]
+
+####################################################################################################
+TIER1 MEMORY [16]
+####################################################################################################
+
+🔑 ID: tier1_iePUKeei2s
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+Hi Lina and Colin,
+
+Thank you for the great conversation last week about solving your ML debugging agent's memory challenges. As Colin mentioned, manually creating static documentation files for GraphQL endpoints and updating agent context after each user issue is unsustainable - [Papr](https://papr.ai/) solves this.
+
+**Perfect Timing:** We just launched document ingestion, custom schema support, and GraphQL querying on your custom schema!
+
+**Your Core Pain Points:**
+
+  - GraphQL endpoints
+   [Content length: 2933 characters]
+
+📊 METADATA:
+   id: iePUKeei2s
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['ML debugging', 'GraphQL', 'memory challenges', 'documentation', 'agent context', 'Papr']
+   updatedAt: 2025-11-19T15:39:59.353Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.38500977 -0.0440979   0.00236511  0.05932617  0.73339844  0.0015955
+ -0.00688934 -0.0362854   0.00133228  0.05899048]
+
+####################################################################################################
+TIER1 MEMORY [17]
+####################################################################################################
+
+🔑 ID: tier1_4mUPy2fagZ
+
+📄 CONTENT (ChromaDB document field):
+   \---
+
+ Subject: GM Cruise + Papr: GraphQL Memory Solution & 2-Week Pilot
+
+  Hi Lina and Colin,
+
+  Thank you for the great conversation today about solving your ML debugging agent's memory challenges. As Colin mentioned, manually creating static documentation files for GraphQL endpoints and updating agent context after each user issue is unsustainable - Papr
+
+  solves this.
+
+  **Perfect Timing:** We just launched document ingestion, custom schema support, and GraphQL querying on your custom schem
+   [Content length: 2770 characters]
+
+📊 METADATA:
+   id: 4mUPy2fagZ
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['GraphQL', 'memory management', 'ML debugging', 'pilot proposal', 'documentation']
+   updatedAt: 2025-11-19T15:39:59.696Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.24133301 -0.050354   -0.00759506  0.0592041   0.7265625   0.00323868
+ -0.00132179 -0.03613281  0.01143646  0.05114746]
+
+####################################################################################################
+TIER1 MEMORY [18]
+####################################################################################################
+
+🔑 ID: tier1_CdnYZdNucs
+
+📄 CONTENT (ChromaDB document field):
+   Schema 
+
+Conversation Schema 
+
+Security Behavoir Schema
+
+📊 METADATA:
+   id: CdnYZdNucs
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T18:11:08.270Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 0.121521   -0.02752686 -0.01817322  0.05148315  0.88671875 -0.00158691
+ -0.00346184 -0.02532959 -0.00200081  0.0345459 ]
+
+####################################################################################################
+TIER1 MEMORY [19]
+####################################################################################################
+
+🔑 ID: tier1_gfm9m7HU7i
+
+📄 CONTENT (ChromaDB document field):
+   Schema
+
+📊 METADATA:
+   id: gfm9m7HU7i
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['meeting', 'tasks', 'progress', 'team']
+   updatedAt: 2025-11-21T17:22:11.945Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [-1.51519775e-02 -5.34439087e-03 -1.23405457e-03  1.16195679e-02
+  9.58984375e-01 -2.55012512e-03 -1.77192688e-03 -5.66101074e-03
+  5.32150269e-04  5.32150269e-03]
+
+####################################################################################################
+TIER1 MEMORY [20]
+####################################################################################################
+
+🔑 ID: tier1_katzeaLT1l
+
+📄 CONTENT (ChromaDB document field):
+   Highlight that Papr’s engineering emphasis on performance and reliability gives it a **“Twilio-like” SLA** (e.g. 99.9% uptime, response in under X milliseconds, etc., which can be future goals if not current). This level of performance focus further separates Papr from open-source projects or academic solutions, reinforcing it as the **premium solution**.
+
+  - **Continuous Learning and AI Integration:** Papr’s memory layer is not static. A persuasive technical point is how Papr can **learn from 
+   [Content length: 14772 characters]
+
+📊 METADATA:
+   id: katzeaLT1l
+   source: sync_tiers
+   tier: 1
+   type: TextMemoryItem
+   topics: ['AI memory', 'performance', 'reliability', 'developer engagement', 'fundraising']
+   updatedAt: 2025-11-21T22:25:30.118Z
+
+🧮 EMBEDDING:
+   Dimension: 2560
+   Non-zero values: 2560/2560 (100.0%)
+   First 10 values: [ 2.70019531e-01 -5.22155762e-02  2.68936157e-04  5.54504395e-02
+  6.67968750e-01  2.70233154e-02 -1.21402740e-03 -3.07464600e-02
+  3.04412842e-02  2.97088623e-02]

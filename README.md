@@ -93,6 +93,10 @@ PAPR_ONDEVICE_PROCESSING=true  # or false if insufficient resources
 # If using on-device:
 PAPR_ENABLE_COREML=true
 PAPR_COREML_MODEL=/path/to/Qwen3-Embedding-4B-FP16-Final.mlpackage
+
+# Tier Configuration (syncs from PAPR Cloud to local ChromaDB):
+PAPR_MAX_TIER0=200  # Goals/OKRs (high-priority memories)
+PAPR_MAX_TIER1=200  # General memories (contextual information)
 ```
 
 Get your keys:
@@ -127,17 +131,42 @@ Open http://localhost:3000 in your browser
 ### Speed of On-Device Processing
 - **CoreML acceleration** - Embeddings generated locally on your device
 - **No server latency** - All processing happens on-device
-- **Real-time metrics** - See exact retrieval times (typically <100ms)
+- **Real-time metrics** - See exact retrieval times (typically <100ms on ANE, 200-250ms on GPU)
 
 ### Quality of Retrieval
 - **Relevant memories** - Semantic search finds contextually relevant info
 - **Citation verification** - Full content and metadata available
+- **Multi-tier search** - Search both tier0 (goals/OKRs) and tier1 (general memories)
 - **Graph connections** - Optional knowledge graph traversal
 
 ### Integration Simplicity
 - **Simple SDK** - Just a few lines to search memories
 - **Async support** - Non-blocking operations
 - **Environment config** - Easy on-device processing toggle
+
+## 📚 Memory Tiers
+
+The SDK organizes memories into **two tiers** that are synced from PAPR Cloud to local ChromaDB:
+
+### Tier 0: Goals & OKRs (High Priority)
+- **Purpose**: Strategic goals, objectives, and key results
+- **Use Case**: Long-term context, user objectives, project goals
+- **Collection Name**: `tier0_goals_okrs`
+- **Config**: `PAPR_MAX_TIER0=200` (max items to sync)
+
+### Tier 1: General Memories (Contextual)
+- **Purpose**: Conversation history, contextual information, facts
+- **Use Case**: Recent interactions, learned preferences, domain knowledge
+- **Collection Name**: `tier1_memories`  
+- **Config**: `PAPR_MAX_TIER1=200` (max items to sync)
+
+### How Search Works
+1. **Single embedding** generated for query (one CoreML call)
+2. **Both collections searched** in parallel using same embedding
+3. **Results merged** and sorted by relevance score
+4. **Top N returned** to application (configurable via `max_memories`)
+
+This ensures you get the most relevant context from **both** strategic goals and recent memories!
 
 ## 🛠️ Architecture
 

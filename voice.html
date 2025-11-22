@@ -416,7 +416,7 @@
     <script>
         // Configuration
         const PAPR_MEMORY_URL = '/api/search';  // ON-DEVICE CoreML search! (relative URL works with ngrok!)
-        const WS_URL = 'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17';
+        let WS_URL = null;  // Will be set dynamically with model from .env
 
         // State
         let ws = null;
@@ -425,6 +425,7 @@
         let isConnected = false;
         let OPENAI_API_KEY = null;
         let PAPR_API_KEY = null;
+        let OPENAI_REALTIME_MODEL = null;
         let nextAudioTime = 0;
 
         // ========== SEARCH CONSTELLATION SYSTEM ==========
@@ -729,6 +730,11 @@
             const data = await response.json();
             OPENAI_API_KEY = data.openai_key;
             PAPR_API_KEY = data.papr_key;
+            OPENAI_REALTIME_MODEL = data.openai_realtime_model || 'gpt-realtime-mini-2025-10-06';
+            
+            // Set WebSocket URL with model from environment
+            WS_URL = `wss://api.openai.com/v1/realtime?model=${OPENAI_REALTIME_MODEL}`;
+            console.log(`✅ Using OpenAI Realtime model: ${OPENAI_REALTIME_MODEL}`);
         }
 
         // Load keys immediately
@@ -769,7 +775,7 @@
                 setStatus('Connecting...', 'thinking');
 
                 // Wait for keys to load
-                if (!OPENAI_API_KEY || !PAPR_API_KEY) {
+                if (!OPENAI_API_KEY || !PAPR_API_KEY || !WS_URL) {
                     showError('Loading API keys...');
                     setTimeout(connect, 500);
                     return;
@@ -781,7 +787,7 @@
                 ws = new WebSocket(WS_URL, protocols);
 
                 ws.onopen = () => {
-                    console.log('✅ WebSocket connected to OpenAI Realtime API');
+                    console.log(`✅ WebSocket connected to OpenAI Realtime API (${OPENAI_REALTIME_MODEL})`);
                     isConnected = true;
 
                     // Configure session (GA format)
@@ -790,19 +796,29 @@
                         type: 'session.update',
                         session: {
                             type: 'realtime',
-                            model: 'gpt-realtime',
+                            model: OPENAI_REALTIME_MODEL,
                             instructions: `You are PAPR's memory assistant with access to the user's personal memory database.
 
 IMPORTANT INSTRUCTIONS:
 1. When users ask about their memories, ALWAYS use the search_papr_memories tool first
-2. The tool returns an array of memory objects with 'content', 'score', 'tags', and 'topics'
-3. ALWAYS base your answers on the ACTUAL CONTENT from the memories returned
+2. The tool returns memory objects with these fields:
+   - content: The actual memory text
+   - score/relevance: How relevant to the query (higher = more relevant)
+   - ID: Unique identifier you can reference
+   - tags: Category tags
+   - topics: Key topics
+   - timestamp: When the memory was created
+   - context: Additional contextual information
+3. ALWAYS base your answers ONLY on the ACTUAL CONTENT from the memories returned
 4. Quote or paraphrase specific details from the memory content
-5. If no relevant memories are found, clearly say "I don't have any information about that in your memories"
-6. NEVER make up or hallucinate information not present in the memory content
-7. Higher scores indicate more relevant memories - prioritize those in your answer
+5. When citing memories, you can reference them by their ID for traceability
+6. Pay attention to timestamps to provide temporal context (e.g., "Last month you mentioned...")
+7. If no relevant memories are found, clearly say "I don't have any information about that in your memories"
+8. NEVER make up or hallucinate information not present in the memory content
+9. Higher scores indicate more relevant memories - prioritize those in your answer
+10. If you see multiple memories about the same topic, synthesize them coherently
 
-Format your responses conversationally, citing the relevant memories naturally.`,
+Format your responses conversationally, citing the relevant memories naturally with temporal context when available.`,
                             audio: {
                                 input: {
                                     format: {
@@ -971,11 +987,13 @@ Format your responses conversationally, citing the relevant memories naturally.`
                     const searchLatency = Math.round(performance.now() - searchStartTime);
 
                     const memories = data.data.memories.map(m => ({
+                        id: m.id || null,
                         content: m.content,
                         score: m.similarity_score || m.score || 0,
                         tags: m.tags || [],
                         topics: m.topics || [],
-                        custom_metadata: m.custom_metadata || null
+                        custom_metadata: m.custom_metadata || null,
+                        metadata: m.metadata || null  // Includes timestamps, context, etc.
                     }));
 
                     // Add search to constellation visualization
@@ -1005,9 +1023,24 @@ Format your responses conversationally, citing the relevant memories naturally.`
                         .filter(m => m.content && m.content.trim())
                         .map((m, i) => {
                             const score = (m.score || 0).toFixed(3);
+                            const memoryId = m.id ? ` [ID: ${m.id}]` : '';
                             const tags = m.tags && m.tags.length > 0 ? ` [Tags: ${m.tags.join(', ')}]` : '';
                             const topics = m.topics && m.topics.length > 0 ? ` [Topics: ${m.topics.join(', ')}]` : '';
-                            return `Memory ${i + 1} (relevance: ${score})${tags}${topics}:\n${m.content}\n`;
+                            
+                            // Extract timestamp if available from metadata
+                            let timestamp = '';
+                            if (m.metadata && m.metadata.timestamp) {
+                                const date = new Date(m.metadata.timestamp);
+                                timestamp = ` [Created: ${date.toLocaleDateString()}]`;
+                            }
+                            
+                            // Extract any context info from metadata
+                            let context = '';
+                            if (m.metadata && m.metadata.context) {
+                                context = `\nContext: ${m.metadata.context}`;
+                            }
+                            
+                            return `Memory ${i + 1} (relevance: ${score})${memoryId}${timestamp}${tags}${topics}:\n${m.content}${context}\n`;
                         })
                         .join('\n---\n\n');
 

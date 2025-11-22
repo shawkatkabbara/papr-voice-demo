@@ -23,8 +23,8 @@ from pipecat.services.openai import (
     OpenAILLMService,
     OpenAIUserContextAggregator,
     OpenAIAssistantContextAggregator,
-    OpenAIRealtimeService
 )
+from pipecat.services.openai_realtime_beta import OpenAIRealtimeBetaLLMService
 from pipecat.transports.network.fastapi_websocket import (
     FastAPIWebsocketTransport,
     FastAPIWebsocketParams
@@ -224,7 +224,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
         # OpenAI Realtime API service (handles both STT and LLM)
         # Using gpt-realtime-mini-2025-10-06 for cost-efficient real-time voice
-        realtime = OpenAIRealtimeService(
+        realtime = OpenAIRealtimeBetaLLMService(
             api_key=OPENAI_API_KEY,
             model="gpt-realtime-mini-2025-10-06",
             system_prompt=(
