@@ -98,6 +98,12 @@ try:
 
     api_key = os.environ.get("PAPR_MEMORY_API_KEY")
     base_url = os.environ.get("PAPR_BASE_URL")
+    
+    # Get user context from environment variables
+    # The SDK will auto-detect PAPR_USER_ID and PAPR_EXTERNAL_USER_ID
+    # but you can also pass them explicitly here
+    user_id = os.environ.get("TEST_USER_ID") or os.environ.get("PAPR_USER_ID")
+    external_user_id = os.environ.get("PAPR_EXTERNAL_USER_ID")
 
     client_kwargs = {
         "x_api_key": api_key,
@@ -106,9 +112,25 @@ try:
 
     if base_url:
         client_kwargs["base_url"] = base_url
+    
+    # Pass user context to SDK - this will filter sync_tiers and searches
+    if user_id:
+        client_kwargs["user_id"] = user_id
+    if external_user_id:
+        client_kwargs["external_user_id"] = external_user_id
 
     papr_client = Papr(**client_kwargs)
-    print("✅ PAPR SDK initialized with CoreML!")
+    
+    # Log user context if set
+    if user_id or external_user_id:
+        context_info = []
+        if user_id:
+            context_info.append(f"user_id={user_id}")
+        if external_user_id:
+            context_info.append(f"external_user_id={external_user_id}")
+        print(f"✅ PAPR SDK initialized with user context: {', '.join(context_info)}")
+    else:
+        print("✅ PAPR SDK initialized with CoreML!")
 
     # Check if CoreML is enabled
     coreml_enabled = os.environ.get("PAPR_ENABLE_COREML", "false").lower() in ("true", "1", "yes")
@@ -249,16 +271,30 @@ def _perform_local_coreml_search(query: str, max_memories: int, search_tier0: bo
                 for idx, doc in enumerate(docs):
                     metadata = metas[idx] or {}
                     # ChromaDB stores content in the 'document' field, not in metadata
-                    content = doc or metadata.get("content") or "(No content)"
+                    content = doc or metadata.get("content") or None
+                    
+                    # Skip memories with no content (null, empty, or "Memory(...)" string representation)
+                    if not content or content.strip() == '' or content.startswith('Memory('):
+                        continue
+                    
                     query_similarity = 1.0 - dists[idx] if dists[idx] is not None else 0.0
+                    
+                    # Ensure tags and topics are always arrays (ChromaDB might store as string/None)
+                    tags = metadata.get('tags', [])
+                    if not isinstance(tags, list):
+                        tags = [tags] if tags else []
+                    topics = metadata.get('topics', [])
+                    if not isinstance(topics, list):
+                        topics = [topics] if topics else []
+                    
                     all_memories.append({
                         'content': content,
                         'query_similarity': query_similarity,
                         'relevance_score': metadata.get('similarity_score', 0.0),
                         'score': query_similarity,
                         'similarity_score': query_similarity,
-                        'tags': metadata.get('tags', []),
-                        'topics': metadata.get('topics', []),
+                        'tags': tags,
+                        'topics': topics,
                         'custom_metadata': metadata.get('custom_metadata'),
                         'metadata': metadata,
                         'id': ids[idx] if ids else 'N/A',
@@ -296,16 +332,30 @@ def _perform_local_coreml_search(query: str, max_memories: int, search_tier0: bo
                     for idx, doc in enumerate(docs):
                         metadata = metas[idx] or {}
                         # ChromaDB stores content in the 'document' field, not in metadata
-                        content = doc or metadata.get("content") or "(No content)"
+                        content = doc or metadata.get("content") or None
+                        
+                        # Skip memories with no content (null, empty, or "Memory(...)" string representation)
+                        if not content or content.strip() == '' or content.startswith('Memory('):
+                            continue
+                        
                         query_similarity = 1.0 - dists[idx] if dists[idx] is not None else 0.0
+                        
+                        # Ensure tags and topics are always arrays (ChromaDB might store as string/None)
+                        tags = metadata.get('tags', [])
+                        if not isinstance(tags, list):
+                            tags = [tags] if tags else []
+                        topics = metadata.get('topics', [])
+                        if not isinstance(topics, list):
+                            topics = [topics] if topics else []
+                        
                         all_memories.append({
                             'content': content,
                             'query_similarity': query_similarity,
                             'relevance_score': metadata.get('similarity_score', 0.0),
                             'score': query_similarity,
                             'similarity_score': query_similarity,
-                            'tags': metadata.get('tags', []),
-                            'topics': metadata.get('topics', []),
+                            'tags': tags,
+                            'topics': topics,
                             'custom_metadata': metadata.get('custom_metadata'),
                             'metadata': metadata,
                             'id': ids[idx] if ids else 'N/A',
@@ -415,9 +465,13 @@ def search_memories():
                     if content is None or (isinstance(content, str) and (content.strip() == '' or content.strip().lower() == 'none')):
                         content = None  # Will be handled in frontend
 
-                    # Get tags and topics
+                    # Get tags and topics - ensure they're always arrays
                     tags = getattr(mem, 'tags', None) or []
+                    if not isinstance(tags, list):
+                        tags = [tags] if tags else []
                     topics = getattr(mem, 'topics', None) or []
+                    if not isinstance(topics, list):
+                        topics = [topics] if topics else []
 
                     # Get custom metadata
                     custom_metadata = getattr(mem, 'custom_metadata', None)

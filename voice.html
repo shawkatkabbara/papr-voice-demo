@@ -1024,8 +1024,13 @@ Format your responses conversationally, citing the relevant memories naturally w
                         .map((m, i) => {
                             const score = (m.score || 0).toFixed(3);
                             const memoryId = m.id ? ` [ID: ${m.id}]` : '';
-                            const tags = m.tags && m.tags.length > 0 ? ` [Tags: ${m.tags.join(', ')}]` : '';
-                            const topics = m.topics && m.topics.length > 0 ? ` [Topics: ${m.topics.join(', ')}]` : '';
+                            
+                            // Ensure tags and topics are arrays (defensive check)
+                            const tagsArray = Array.isArray(m.tags) ? m.tags : (m.tags ? [m.tags] : []);
+                            const topicsArray = Array.isArray(m.topics) ? m.topics : (m.topics ? [m.topics] : []);
+                            
+                            const tags = tagsArray.length > 0 ? ` [Tags: ${tagsArray.join(', ')}]` : '';
+                            const topics = topicsArray.length > 0 ? ` [Topics: ${topicsArray.join(', ')}]` : '';
                             
                             // Extract timestamp if available from metadata
                             let timestamp = '';
@@ -1040,7 +1045,10 @@ Format your responses conversationally, citing the relevant memories naturally w
                                 context = `\nContext: ${m.metadata.context}`;
                             }
                             
-                            return `Memory ${i + 1} (relevance: ${score})${memoryId}${timestamp}${tags}${topics}:\n${m.content}${context}\n`;
+                            // Format: Put topics on separate line for better visibility
+                            const topicsLine = topicsArray.length > 0 ? `Topics: ${topicsArray.join(', ')}\n` : '';
+                            
+                            return `Memory ${i + 1} (relevance: ${score})${memoryId}${timestamp}${tags}:\n${topicsLine}${m.content}${context}\n`;
                         })
                         .join('\n---\n\n');
 
