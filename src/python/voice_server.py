@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from pydantic import ValidationError
 from datetime import datetime
 from collections import deque
+from typing import Any, Protocol
 
 # Load environment variables from project root
 # Use find_dotenv() to automatically locate .env file
@@ -43,6 +44,13 @@ CORS(app)
 # Store search history for constellation visualization
 # Using deque with maxlen to automatically limit history size
 search_history = deque(maxlen=30)  # Keep last 30 searches for constellation
+
+
+# Protocol for type checking the local embedder
+class Embedder(Protocol):
+    """Protocol for embedding models with encode method"""
+    def encode(self, texts: list[str]) -> Any:
+        ...
 
 
 def _wait_for_coreml_pipeline(client, timeout=180, interval=3):
@@ -91,7 +99,7 @@ def _wait_for_coreml_pipeline(client, timeout=180, interval=3):
 
 # Initialize PAPR client with CoreML
 papr_client = None
-local_embedder = None
+local_embedder: Embedder | None = None
 local_collection = None
 try:
     from papr_memory import Papr  # type: ignore
@@ -146,10 +154,12 @@ try:
             print("⚠️  SDK initialization timeout - model will load on first search")
 
         # Cache local embedder/collection for direct access after warmup attempt
-        local_embedder = getattr(papr_client.memory, "_local_embedder", None)
+        embedder_obj = getattr(papr_client.memory, "_local_embedder", None)
+        local_embedder = embedder_obj if embedder_obj and hasattr(embedder_obj, 'encode') else None  # type: ignore
         if not local_embedder and hasattr(papr_client.memory, "_get_local_embedder"):
             try:
-                local_embedder = papr_client.memory._get_local_embedder()
+                embedder_obj = papr_client.memory._get_local_embedder()
+                local_embedder = embedder_obj if embedder_obj and hasattr(embedder_obj, 'encode') else None  # type: ignore
             except Exception:
                 local_embedder = None
         local_collection = getattr(papr_client.memory, "_collection", None) or getattr(
@@ -224,164 +234,8 @@ def get_search_history():
     })
 
 
-def _perform_local_coreml_search(query: str, max_memories: int, search_tier0: bool = True, search_tier1: bool = True):
-    """
-    Use the cached CoreML embedder + Chroma collections directly to avoid SDK overhead.
-    Searches both tier0 (goals/okrs) and tier1 (memories) collections and merges results.
-    
-    Args:
-        query: Search query string
-        max_memories: Maximum number of results to return
-        search_tier0: Whether to search tier0 collection (default: True)
-        search_tier1: Whether to search tier1 collection (default: True)
-    
-    Returns:
-        (memories, latency_breakdown) or raises on failure.
-    """
-    if not local_embedder:
-        raise RuntimeError("Local embedder not available yet")
-
-    # Measure embed time precisely (one embedding for both collections)
-    embed_start = time.perf_counter()
-    embedding = local_embedder.encode([query])[0]
-    embed_ms = (time.perf_counter() - embed_start) * 1000
-
-    all_memories = []
-    total_chroma_ms = 0.0
-    collections_searched = []
-
-    # Search tier0 collection (goals/okrs)
-    if search_tier0 and local_collection is not None:
-        try:
-            chroma_start = time.perf_counter()
-            tier0_results = local_collection.query(
-                query_embeddings=[embedding],
-                n_results=max_memories,  # Get max from tier0
-                include=["documents", "metadatas", "distances"]
-            )
-            tier0_chroma_ms = (time.perf_counter() - chroma_start) * 1000
-            total_chroma_ms += tier0_chroma_ms
-
-            if tier0_results.get("ids"):
-                docs = tier0_results["documents"][0]
-                metas = tier0_results["metadatas"][0]
-                dists = tier0_results["distances"][0]
-                ids = tier0_results["ids"][0]
-
-                for idx, doc in enumerate(docs):
-                    metadata = metas[idx] or {}
-                    # ChromaDB stores content in the 'document' field, not in metadata
-                    content = doc or metadata.get("content") or None
-                    
-                    # Skip memories with no content (null, empty, or "Memory(...)" string representation)
-                    if not content or content.strip() == '' or content.startswith('Memory('):
-                        continue
-                    
-                    query_similarity = 1.0 - dists[idx] if dists[idx] is not None else 0.0
-                    
-                    # Ensure tags and topics are always arrays (ChromaDB might store as string/None)
-                    tags = metadata.get('tags', [])
-                    if not isinstance(tags, list):
-                        tags = [tags] if tags else []
-                    topics = metadata.get('topics', [])
-                    if not isinstance(topics, list):
-                        topics = [topics] if topics else []
-                    
-                    all_memories.append({
-                        'content': content,
-                        'query_similarity': query_similarity,
-                        'relevance_score': metadata.get('similarity_score', 0.0),
-                        'score': query_similarity,
-                        'similarity_score': query_similarity,
-                        'tags': tags,
-                        'topics': topics,
-                        'custom_metadata': metadata.get('custom_metadata'),
-                        'metadata': metadata,
-                        'id': ids[idx] if ids else 'N/A',
-                        'tier': 0,  # Mark as tier0
-                        'tier_label': 'goals/okrs'
-                    })
-                collections_searched.append(f"tier0 ({len(docs)} results, {tier0_chroma_ms:.1f}ms)")
-        except Exception as tier0_error:
-            print(f"⚠️  Tier0 search failed: {tier0_error}")
-
-    # Search tier1 collection (memories)
-    if search_tier1:
-        try:
-            # Try to get tier1 collection from SDK client
-            tier1_collection = None
-            if hasattr(papr_client.memory, '_chroma_tier1_collection'):
-                tier1_collection = papr_client.memory._chroma_tier1_collection
-            
-            if tier1_collection is not None:
-                chroma_start = time.perf_counter()
-                tier1_results = tier1_collection.query(
-                    query_embeddings=[embedding],
-                    n_results=max_memories,  # Get max from tier1
-                    include=["documents", "metadatas", "distances"]
-                )
-                tier1_chroma_ms = (time.perf_counter() - chroma_start) * 1000
-                total_chroma_ms += tier1_chroma_ms
-
-                if tier1_results.get("ids"):
-                    docs = tier1_results["documents"][0]
-                    metas = tier1_results["metadatas"][0]
-                    dists = tier1_results["distances"][0]
-                    ids = tier1_results["ids"][0]
-
-                    for idx, doc in enumerate(docs):
-                        metadata = metas[idx] or {}
-                        # ChromaDB stores content in the 'document' field, not in metadata
-                        content = doc or metadata.get("content") or None
-                        
-                        # Skip memories with no content (null, empty, or "Memory(...)" string representation)
-                        if not content or content.strip() == '' or content.startswith('Memory('):
-                            continue
-                        
-                        query_similarity = 1.0 - dists[idx] if dists[idx] is not None else 0.0
-                        
-                        # Ensure tags and topics are always arrays (ChromaDB might store as string/None)
-                        tags = metadata.get('tags', [])
-                        if not isinstance(tags, list):
-                            tags = [tags] if tags else []
-                        topics = metadata.get('topics', [])
-                        if not isinstance(topics, list):
-                            topics = [topics] if topics else []
-                        
-                        all_memories.append({
-                            'content': content,
-                            'query_similarity': query_similarity,
-                            'relevance_score': metadata.get('similarity_score', 0.0),
-                            'score': query_similarity,
-                            'similarity_score': query_similarity,
-                            'tags': tags,
-                            'topics': topics,
-                            'custom_metadata': metadata.get('custom_metadata'),
-                            'metadata': metadata,
-                            'id': ids[idx] if ids else 'N/A',
-                            'tier': 1,  # Mark as tier1
-                            'tier_label': 'memories'
-                        })
-                    collections_searched.append(f"tier1 ({len(docs)} results, {tier1_chroma_ms:.1f}ms)")
-        except Exception as tier1_error:
-            print(f"⚠️  Tier1 search failed: {tier1_error}")
-
-    # Sort merged results by query_similarity (descending) and limit to max_memories
-    all_memories.sort(key=lambda x: x['query_similarity'], reverse=True)
-    final_memories = all_memories[:max_memories]
-
-    latency_breakdown = {
-        'total_ms': round(embed_ms + total_chroma_ms, 1),
-        'sdk_processing_ms': round(embed_ms + total_chroma_ms, 1),
-        'embedding_generation_ms': round(embed_ms, 1),
-        'chromadb_search_ms': round(total_chroma_ms, 1),
-        'processing_overhead_ms': 0.0,
-        'note': f'Local CoreML fast path (searched: {", ".join(collections_searched) if collections_searched else "no collections"})'
-    }
-
-    tier_breakdown = f" [{len([m for m in final_memories if m.get('tier') == 0])} tier0, {len([m for m in final_memories if m.get('tier') == 1])} tier1]"
-    print(f"⚡ Local CoreML fast path → Embedding: {embed_ms:.1f}ms | Chroma: {total_chroma_ms:.1f}ms | Total: {latency_breakdown['total_ms']:.1f}ms{tier_breakdown}")
-    return final_memories, latency_breakdown
+# Removed _perform_local_coreml_search - the SDK handles all search logic internally
+# Including the CoreML fast path. No need to duplicate logic here.
 
 
 @app.route('/api/search', methods=['POST'])
@@ -411,112 +265,179 @@ def search_memories():
         # Detailed timing breakdown
         request_start = time.perf_counter()
 
-        use_fast_path = local_embedder is not None and local_collection is not None
+        # Use SDK for all searches - it handles CoreML fast path internally
         memories = []
         latency_breakdown = None
 
-        if use_fast_path:
-            try:
-                memories, latency_breakdown = _perform_local_coreml_search(query, max_memories)
-            except Exception as fast_path_error:
-                print(f"⚠️  Local CoreML fast path failed: {fast_path_error}. Falling back to SDK search.")
-                use_fast_path = False
+        # Time the SDK call
+        sdk_start = time.perf_counter()
 
-        if not use_fast_path:
-            # Time the SDK call separately
-            sdk_start = time.perf_counter()
+        response = papr_client.memory.search(
+            query=query,
+            max_memories=max_memories,
+            max_nodes=10,
+            enable_agentic_graph=enable_agentic_graph,  # Use validated parameter
+            rank_results=True,  # Enable additional ranking for CoreML embeddings
+            timeout=300.0  # Increased timeout for first CoreML model load
+        )
 
-            response = papr_client.memory.search(
-                query=query,
-                max_memories=max_memories,
-                max_nodes=10,
-                enable_agentic_graph=enable_agentic_graph,  # Use validated parameter
-                rank_results=True,  # Enable additional ranking for CoreML embeddings
-                timeout=300.0  # Increased timeout for first CoreML model load
-            )
+        sdk_end = time.perf_counter()
 
-            sdk_end = time.perf_counter()
+        # SDK latency (embedding + ChromaDB search)
+        sdk_latency_ms = (sdk_end - sdk_start) * 1000
 
-            # SDK latency (embedding + ChromaDB search)
-            sdk_latency_ms = (sdk_end - sdk_start) * 1000
+        # Estimate: ~70-80% is embedding, ~20-30% is search for CoreML
+        estimated_embedding_ms = sdk_latency_ms * 0.75
+        estimated_search_ms = sdk_latency_ms * 0.25
 
-            # Estimate: ~70-80% is embedding, ~20-30% is search for CoreML
-            estimated_embedding_ms = sdk_latency_ms * 0.75
-            estimated_search_ms = sdk_latency_ms * 0.25
+        # Extract memories from response with proper null handling
+        tier0_count = 0
+        tier1_count = 0
+        
+        if response and response.data and response.data.memories:
+            for mem in response.data.memories:
+                # Get ChromaDB query similarity score (cosine similarity to search query)
+                query_similarity = 0.0
+            relevance_score = 0.0
+            
+            # Try to extract scores from various locations
+            if hasattr(mem, 'pydantic_extra__') and mem.pydantic_extra__:
+                query_similarity = mem.pydantic_extra__.get('similarity_score', 0.0)
+            relevance_score = mem.pydantic_extra__.get('relevance_score', 0.0)
 
-            # Extract memories from response with proper null handling
-            if response and response.data and response.data.memories:
-                for mem in response.data.memories:
-                    # Get ChromaDB query similarity score (cosine similarity to search query)
-                    query_similarity = 0.0
-                    if hasattr(mem, 'pydantic_extra__') and mem.pydantic_extra__:
-                        query_similarity = mem.pydantic_extra__.get('similarity_score', 0.0)
-                    else:
-                        query_similarity = getattr(mem, 'score', 0.0)
+            # Fallback: Try metadata (cloud API might put it here)
+            if query_similarity == 0.0 or relevance_score == 0.0:
+                metadata = getattr(mem, 'metadata', {})
+                if isinstance(metadata, dict):
+                    if query_similarity == 0.0:
+                        query_similarity = metadata.get('query_similarity', metadata.get('similarity_score', 0.0))
+                    if relevance_score == 0.0:
+                        relevance_score = metadata.get('relevance_score', 0.0)
+            
+            # Last fallback: Try custom_metadata
+            if query_similarity == 0.0 or relevance_score == 0.0:
+                custom_metadata = getattr(mem, 'custom_metadata', {})
+                if isinstance(custom_metadata, dict):
+                    if query_similarity == 0.0:
+                        query_similarity = custom_metadata.get('query_similarity', custom_metadata.get('similarity_score', 0.0))
+                    if relevance_score == 0.0:
+                        relevance_score = custom_metadata.get('relevance_score', 0.0)
 
-                    # Get server-side relevance score (goals/transitions/hotness composite)
-                    # This comes from metadata when the memory was synced from tier0
-                    metadata = getattr(mem, 'metadata', {})
-                    relevance_score = metadata.get('similarity_score', 0.0) if isinstance(metadata, dict) else 0.0
+                # Get content with null checking
+                content = getattr(mem, 'content', None)
+                # Handle None, empty string, and string 'None'
+                if content is None or (isinstance(content, str) and (content.strip() == '' or content.strip().lower() == 'none')):
+                    content = None  # Will be handled in frontend
 
-                    # Get content with null checking
-                    content = getattr(mem, 'content', None)
-                    # Handle None, empty string, and string 'None'
-                    if content is None or (isinstance(content, str) and (content.strip() == '' or content.strip().lower() == 'none')):
-                        content = None  # Will be handled in frontend
+            # Get tags and topics - ensure they're always arrays
+                tags = getattr(mem, 'tags', None) or []
+            if not isinstance(tags, list):
+                tags = [tags] if tags else []
+                topics = getattr(mem, 'topics', None) or []
+            if not isinstance(topics, list):
+                topics = [topics] if topics else []
 
-                    # Get tags and topics - ensure they're always arrays
-                    tags = getattr(mem, 'tags', None) or []
-                    if not isinstance(tags, list):
-                        tags = [tags] if tags else []
-                    topics = getattr(mem, 'topics', None) or []
-                    if not isinstance(topics, list):
-                        topics = [topics] if topics else []
+                # Get custom metadata
+                custom_metadata = getattr(mem, 'custom_metadata', None)
 
-                    # Get custom metadata
-                    custom_metadata = getattr(mem, 'custom_metadata', None)
+            # Determine tier from SDK's type field or metadata
+            # SDK sets type="tier0" or type="tier1" for local searches
+            # For cloud API, check metadata.tier or metadata.sourceType
+            memory_type = getattr(mem, 'type', 'unknown')
+            
+            # Check if type is already set to tier0/tier1 by SDK
+            if memory_type in ['tier0', 'tier1']:
+                tier = memory_type
+            else:
+                # Fallback: Check metadata for tier information
+                tier = 'tier1'  # Default to tier1
+                if isinstance(metadata, dict):
+                    metadata_tier = metadata.get('tier', None)
+                    if metadata_tier == 0 or metadata_tier == '0' or metadata_tier == 'tier0':
+                        tier = 'tier0'
+                    elif metadata_tier == 1 or metadata_tier == '1' or metadata_tier == 'tier1':
+                        tier = 'tier1'
+            
+            tier_label = 'goals/okrs' if tier == 'tier0' else 'memories'
+            
+            if tier == 'tier0':
+                tier0_count += 1
+            else:
+                tier1_count += 1
 
-                    memories.append({
-                        'content': content,
-                        'query_similarity': query_similarity,  # ChromaDB cosine similarity
-                        'relevance_score': relevance_score,    # Server composite score
-                        'score': query_similarity,             # Keep for backward compatibility
-                        'similarity_score': query_similarity,  # Keep for backward compatibility
-                        'tags': tags,
-                        'topics': topics,
-                        'custom_metadata': custom_metadata,
-                        'metadata': metadata,
-                        'id': getattr(mem, 'id', 'N/A')
-                    })
+            # ✅ IMPORTANT: Only send user-facing fields to OpenAI
+            # DO NOT send: memory IDs, scores, tiers, internal metadata, ACLs, etc.
+            memory_for_llm = {}
+            
+            # Always include content (even if None - frontend will handle)
+            memory_for_llm['content'] = content
+            
+            # Helper function to add field only if it exists and is not null/empty
+            def add_if_present(field_name, value=None):
+                if value is None:
+                    value = getattr(mem, field_name, None)
+                if value is not None:
+                    # Skip empty strings, empty lists, empty dicts
+                    if isinstance(value, str) and value.strip() == '':
+                        return
+                    if isinstance(value, (list, dict)) and len(value) == 0:
+                        return
+                    memory_for_llm[field_name] = value
+            
+            # Add user-facing fields (only if present and not empty)
+            add_if_present('context')
+            add_if_present('location')
+            add_if_present('hierarchical_structures')
+            add_if_present('source_url')
+            add_if_present('steps')
+            add_if_present('current_step')
+            add_if_present('category')
+            add_if_present('topics', topics)  # Already extracted above
+            add_if_present('tags', tags)  # Already extracted above
+            add_if_present('title')
+            add_if_present('page_number')
+            add_if_present('total_pages')
+            add_if_present('file_url')
+            add_if_present('page')
+            add_if_present('created_at')
+            add_if_present('updated_at')
+            add_if_present('customMetadata', custom_metadata)  # Already extracted above
+            
+            # Do NOT send to OpenAI: IDs, scores, tiers, types, internal metadata
+            # Keep these for internal logging only
+            
+            memories.append(memory_for_llm)
 
-            processing_overhead_ms = ((time.perf_counter() - request_start) * 1000) - sdk_latency_ms
+        processing_overhead_ms = ((time.perf_counter() - request_start) * 1000) - sdk_latency_ms
 
-            latency_breakdown = {
-                'total_ms': round((time.perf_counter() - request_start) * 1000, 1),
-                'sdk_processing_ms': round(sdk_latency_ms, 1),
-                'embedding_generation_ms': round(estimated_embedding_ms, 1),  # Estimated
-                'chromadb_search_ms': round(estimated_search_ms, 1),  # Estimated
-                'processing_overhead_ms': round(processing_overhead_ms, 1),  # Python + Flask
-                'note': 'SDK search path (estimated embed/search split)'
-            }
+        latency_breakdown = {
+            'total_ms': round((time.perf_counter() - request_start) * 1000, 1),
+            'sdk_processing_ms': round(sdk_latency_ms, 1),
+            'embedding_generation_ms': round(estimated_embedding_ms, 1),  # Estimated
+            'chromadb_search_ms': round(estimated_search_ms, 1),  # Estimated
+            'processing_overhead_ms': round(processing_overhead_ms, 1),  # Python + Flask
+            'note': 'SDK search path (estimated embed/search split)'
+        }
 
         # Log memory retrieval summary
-        print(f"\n📊 Retrieved {len(memories)} memories from {'local fast path' if use_fast_path else 'SDK search'}")
+        print(f"\n📊 Retrieved {len(memories)} memories from SDK search")
         memories_with_content = sum(1 for m in memories if m['content'] is not None)
         memories_without_content = len(memories) - memories_with_content
         print(f"   ✅ {memories_with_content} with content")
         print(f"   ❌ {memories_without_content} without content")
+        
+        # Log tier breakdown
+        print(f"\n📋 Memories breakdown:")
+        print(f"   [Tier0] {tier0_count} results (goals/OKRs/use-cases)")
+        print(f"   [Tier1] {tier1_count} results (general memories)")
 
         # Log all memories (up to 30)
         print(f"\n📋 All {len(memories)} memories:")
         for i, mem in enumerate(memories, 1):
             content_preview = mem['content'][:100] if mem['content'] else "(No content)"
-            query_sim = mem['query_similarity']
-            rel_score = mem['relevance_score']
-            if rel_score > 0:
-                print(f"   [{i}] Query: {query_sim:.4f} | Relevance: {rel_score:.4f} | {content_preview}...")
-            else:
-                print(f"   [{i}] Query: {query_sim:.4f} | {content_preview}...")
+            topics_preview = mem.get('topics', [])
+            topics_str = f" [Topics: {', '.join(topics_preview[:3])}]" if topics_preview else ""
+            print(f"   [{i}]{topics_str} {content_preview}...")
 
         # Calculate total end-to-end latency (includes Python/Flask overhead)
         print(f"⏱️  Total latency: {latency_breakdown['total_ms']:.1f}ms")
@@ -534,12 +455,11 @@ def search_memories():
             'result_count': len(memories),
             'enable_agentic_graph': enable_agentic_graph,
             'latency': latency_breakdown,
-            'top_score': memories[0]['query_similarity'] if memories else 0,
             # Store summary of top 3 memories for constellation tooltip
             'top_memories_preview': [
                 {
                     'content': m['content'][:100] if m['content'] else '(No content)',
-                    'score': m['query_similarity']
+                    'topics': m.get('topics', [])[:3]  # First 3 topics
                 }
                 for m in memories[:3]
             ]

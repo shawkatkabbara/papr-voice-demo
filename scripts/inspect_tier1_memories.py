@@ -93,7 +93,8 @@ def main():
             print(f"\n📊 METADATA:")
             output_lines.append("📊 METADATA:")
             
-            for key in ['id', 'source', 'tier', 'type', 'topics', 'updatedAt', 'similarity_score']:
+            # Display key metadata fields in order
+            for key in ['id', 'source', 'tier', 'type', 'topics', 'updatedAt', 'similarity_score', 'relevance_score']:
                 if key in metadata:
                     print(f"   {key}: {metadata[key]}")
                     output_lines.append(f"   {key}: {metadata[key]}")

@@ -280,6 +280,40 @@
             font-style: italic;
         }
 
+        .memory-content.truncated {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .memory-content.truncated::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, rgba(30, 30, 35, 0.98));
+        }
+
+        .show-more-btn {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(12, 205, 255, 0.15);
+            border: 1px solid rgba(12, 205, 255, 0.3);
+            color: #0CCDFF;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .show-more-btn:hover {
+            background: rgba(12, 205, 255, 0.25);
+            border-color: #0CCDFF;
+        }
+
         .memory-tags {
             margin-top: 8px;
             display: flex;
@@ -553,7 +587,7 @@
                 const searchData = {
                     query,
                     latencyMs,
-                    memories: memories.slice(0, 5), // Top 5
+                    memories: memories.slice(0, 30), // Top 30 memories
                     latencyBreakdown,
                     timestamp: new Date()
                 };
@@ -629,24 +663,26 @@
                 }
 
                 const memoriesHtml = searchData.memories.map((m, index) => {
-                    // Get first 4-5 sentences (approximately 400 chars)
+                    // Show preview (first ~300 chars) for truncated view
                     let content = m.content;
                     let preview = '';
+                    let fullContent = '';
+                    let isTruncated = false;
 
                     // Handle missing or 'None' content
                     if (!content || content === 'None' || content === null || (typeof content === 'string' && content.trim() === '')) {
                         preview = '<em>(No content available for this memory)</em>';
+                        fullContent = preview;
                     } else {
-                        // Split by sentences
-                        const sentences = content.split(/[.!?]\s+/);
-                        const first5Sentences = sentences.slice(0, 5).join('. ');
-                        preview = first5Sentences;
-
-                        // Limit to ~400 chars max
-                        if (preview.length > 400) {
-                            preview = preview.substring(0, 400) + '...';
-                        } else if (sentences.length > 5) {
-                            preview += '...';
+                        // Store full content
+                        fullContent = content;
+                        
+                        // Create preview (first 300 chars)
+                        if (content.length > 300) {
+                            preview = content.substring(0, 300) + '...';
+                            isTruncated = true;
+                        } else {
+                            preview = content;
                         }
                     }
 
@@ -679,10 +715,16 @@
                         ? `<div class="memory-score">Query Match: ${queryScore} | Goal Relevance: ${relevanceScore}</div>`
                         : `<div class="memory-score">Query Match: ${queryScore}</div>`;
 
+                    // Add Show More/Less button if content is truncated
+                    const showMoreBtn = isTruncated 
+                        ? `<button class="show-more-btn" data-memory-index="${index}">Show More</button>` 
+                        : '';
+
                     return `
                         <div class="modal-memory-item">
                             ${scoresHtml}
-                            <div class="memory-content">${preview}</div>
+                            <div class="memory-content ${isTruncated ? 'truncated' : ''}" data-memory-index="${index}" data-full-content="${encodeURIComponent(fullContent)}">${preview}</div>
+                            ${showMoreBtn}
                             ${tagsHtml}
                             ${topicsHtml}
                             ${metadataHtml}
@@ -691,6 +733,31 @@
                 }).join('');
 
                 document.getElementById('modalMemories').innerHTML = memoriesHtml;
+                
+                // Add event listeners for Show More/Less buttons
+                document.querySelectorAll('.show-more-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const memoryIndex = this.getAttribute('data-memory-index');
+                        const contentDiv = document.querySelector(`.memory-content[data-memory-index="${memoryIndex}"]`);
+                        const fullContent = decodeURIComponent(contentDiv.getAttribute('data-full-content'));
+                        
+                        if (contentDiv.classList.contains('truncated')) {
+                            // Expand to show full content
+                            contentDiv.classList.remove('truncated');
+                            contentDiv.textContent = fullContent;
+                            this.textContent = 'Show Less';
+                        } else {
+                            // Collapse to show preview
+                            const preview = fullContent.length > 300 
+                                ? fullContent.substring(0, 300) + '...' 
+                                : fullContent;
+                            contentDiv.classList.add('truncated');
+                            contentDiv.textContent = preview;
+                            this.textContent = 'Show More';
+                        }
+                    });
+                });
+                
                 document.getElementById('searchModal').classList.add('active');
                 document.getElementById('modalOverlay').classList.add('active');
             }

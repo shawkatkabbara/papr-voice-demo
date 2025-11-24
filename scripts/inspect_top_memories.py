@@ -63,11 +63,26 @@ try:
         # Metadata fields
         output_lines.append(f"\n📊 METADATA:")
         if metadata:
+            # Display key fields first (if present), then rest sorted
+            key_fields = ['id', 'source', 'tier', 'type', 'topics', 'tags', 'updatedAt', 'similarity_score', 'relevance_score']
+            displayed_keys = set()
+            
+            # First, display key fields in order
+            for key in key_fields:
+                if key in metadata:
+                    value_str = str(metadata[key])
+                    if len(value_str) > 300:
+                        value_str = value_str[:300] + "... (truncated)"
+                    output_lines.append(f"   {key}: {value_str}")
+                    displayed_keys.add(key)
+            
+            # Then display any remaining metadata fields sorted
             for key, value in sorted(metadata.items()):
-                value_str = str(value)
-                if len(value_str) > 300:
-                    value_str = value_str[:300] + "... (truncated)"
-                output_lines.append(f"   {key}: {value_str}")
+                if key not in displayed_keys:
+                    value_str = str(value)
+                    if len(value_str) > 300:
+                        value_str = value_str[:300] + "... (truncated)"
+                    output_lines.append(f"   {key}: {value_str}")
         else:
             output_lines.append("   (No metadata)")
 
