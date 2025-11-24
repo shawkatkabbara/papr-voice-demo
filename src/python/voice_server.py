@@ -298,30 +298,30 @@ def search_memories():
             for mem in response.data.memories:
                 # Get ChromaDB query similarity score (cosine similarity to search query)
                 query_similarity = 0.0
-            relevance_score = 0.0
-            
-            # Try to extract scores from various locations
-            if hasattr(mem, 'pydantic_extra__') and mem.pydantic_extra__:
-                query_similarity = mem.pydantic_extra__.get('similarity_score', 0.0)
-            relevance_score = mem.pydantic_extra__.get('relevance_score', 0.0)
+                relevance_score = 0.0
+                
+                # Try to extract scores from various locations
+                if hasattr(mem, 'pydantic_extra__') and mem.pydantic_extra__:
+                    query_similarity = mem.pydantic_extra__.get('similarity_score', 0.0)
+                    relevance_score = mem.pydantic_extra__.get('relevance_score', 0.0)
 
-            # Fallback: Try metadata (cloud API might put it here)
-            if query_similarity == 0.0 or relevance_score == 0.0:
-                metadata = getattr(mem, 'metadata', {})
-                if isinstance(metadata, dict):
-                    if query_similarity == 0.0:
-                        query_similarity = metadata.get('query_similarity', metadata.get('similarity_score', 0.0))
-                    if relevance_score == 0.0:
-                        relevance_score = metadata.get('relevance_score', 0.0)
-            
-            # Last fallback: Try custom_metadata
-            if query_similarity == 0.0 or relevance_score == 0.0:
-                custom_metadata = getattr(mem, 'custom_metadata', {})
-                if isinstance(custom_metadata, dict):
-                    if query_similarity == 0.0:
-                        query_similarity = custom_metadata.get('query_similarity', custom_metadata.get('similarity_score', 0.0))
-                    if relevance_score == 0.0:
-                        relevance_score = custom_metadata.get('relevance_score', 0.0)
+                # Fallback: Try metadata (cloud API might put it here)
+                if query_similarity == 0.0 or relevance_score == 0.0:
+                    metadata = getattr(mem, 'metadata', {})
+                    if isinstance(metadata, dict):
+                        if query_similarity == 0.0:
+                            query_similarity = metadata.get('query_similarity', metadata.get('similarity_score', 0.0))
+                        if relevance_score == 0.0:
+                            relevance_score = metadata.get('relevance_score', 0.0)
+                
+                # Last fallback: Try custom_metadata
+                if query_similarity == 0.0 or relevance_score == 0.0:
+                    custom_metadata = getattr(mem, 'custom_metadata', {})
+                    if isinstance(custom_metadata, dict):
+                        if query_similarity == 0.0:
+                            query_similarity = custom_metadata.get('query_similarity', custom_metadata.get('similarity_score', 0.0))
+                        if relevance_score == 0.0:
+                            relevance_score = custom_metadata.get('relevance_score', 0.0)
 
                 # Get content with null checking
                 content = getattr(mem, 'content', None)
@@ -329,84 +329,86 @@ def search_memories():
                 if content is None or (isinstance(content, str) and (content.strip() == '' or content.strip().lower() == 'none')):
                     content = None  # Will be handled in frontend
 
-            # Get tags and topics - ensure they're always arrays
+                # Get tags and topics - ensure they're always arrays
                 tags = getattr(mem, 'tags', None) or []
-            if not isinstance(tags, list):
-                tags = [tags] if tags else []
+                if not isinstance(tags, list):
+                    tags = [tags] if tags else []
+                
                 topics = getattr(mem, 'topics', None) or []
-            if not isinstance(topics, list):
-                topics = [topics] if topics else []
+                if not isinstance(topics, list):
+                    topics = [topics] if topics else []
 
                 # Get custom metadata
                 custom_metadata = getattr(mem, 'custom_metadata', None)
 
-            # Determine tier from SDK's type field or metadata
-            # SDK sets type="tier0" or type="tier1" for local searches
-            # For cloud API, check metadata.tier or metadata.sourceType
-            memory_type = getattr(mem, 'type', 'unknown')
-            
-            # Check if type is already set to tier0/tier1 by SDK
-            if memory_type in ['tier0', 'tier1']:
-                tier = memory_type
-            else:
-                # Fallback: Check metadata for tier information
-                tier = 'tier1'  # Default to tier1
-                if isinstance(metadata, dict):
-                    metadata_tier = metadata.get('tier', None)
-                    if metadata_tier == 0 or metadata_tier == '0' or metadata_tier == 'tier0':
-                        tier = 'tier0'
-                    elif metadata_tier == 1 or metadata_tier == '1' or metadata_tier == 'tier1':
-                        tier = 'tier1'
-            
-            tier_label = 'goals/okrs' if tier == 'tier0' else 'memories'
-            
-            if tier == 'tier0':
-                tier0_count += 1
-            else:
-                tier1_count += 1
+                # Determine tier from SDK's type field or metadata
+                # SDK sets type="tier0" or type="tier1" for local searches
+                # For cloud API, check metadata.tier or metadata.sourceType
+                memory_type = getattr(mem, 'type', 'unknown')
+                
+                # Check if type is already set to tier0/tier1 by SDK
+                if memory_type in ['tier0', 'tier1']:
+                    tier = memory_type
+                else:
+                    # Fallback: Check metadata for tier information
+                    tier = 'tier1'  # Default to tier1
+                    metadata = getattr(mem, 'metadata', {})
+                    if isinstance(metadata, dict):
+                        metadata_tier = metadata.get('tier', None)
+                        if metadata_tier == 0 or metadata_tier == '0' or metadata_tier == 'tier0':
+                            tier = 'tier0'
+                        elif metadata_tier == 1 or metadata_tier == '1' or metadata_tier == 'tier1':
+                            tier = 'tier1'
+                
+                tier_label = 'goals/okrs' if tier == 'tier0' else 'memories'
+                
+                if tier == 'tier0':
+                    tier0_count += 1
+                else:
+                    tier1_count += 1
 
-            # ✅ IMPORTANT: Only send user-facing fields to OpenAI
-            # DO NOT send: memory IDs, scores, tiers, internal metadata, ACLs, etc.
-            memory_for_llm = {}
-            
-            # Always include content (even if None - frontend will handle)
-            memory_for_llm['content'] = content
-            
-            # Helper function to add field only if it exists and is not null/empty
-            def add_if_present(field_name, value=None):
-                if value is None:
-                    value = getattr(mem, field_name, None)
-                if value is not None:
-                    # Skip empty strings, empty lists, empty dicts
-                    if isinstance(value, str) and value.strip() == '':
-                        return
-                    if isinstance(value, (list, dict)) and len(value) == 0:
-                        return
-                    memory_for_llm[field_name] = value
-            
-            # Add user-facing fields (only if present and not empty)
-            add_if_present('context')
-            add_if_present('location')
-            add_if_present('hierarchical_structures')
-            add_if_present('source_url')
-            add_if_present('steps')
-            add_if_present('current_step')
-            add_if_present('category')
-            add_if_present('topics', topics)  # Already extracted above
-            add_if_present('tags', tags)  # Already extracted above
-            add_if_present('title')
-            add_if_present('page_number')
-            add_if_present('total_pages')
-            add_if_present('file_url')
-            add_if_present('page')
-            add_if_present('created_at')
-            add_if_present('updated_at')
-            add_if_present('customMetadata', custom_metadata)  # Already extracted above
-            
-            # Do NOT send to OpenAI: IDs, scores, tiers, types, internal metadata
-            # Keep these for internal logging only
-            
-            memories.append(memory_for_llm)
+                # ✅ IMPORTANT: Only send user-facing fields to OpenAI
+                # DO NOT send: memory IDs, scores, tiers, internal metadata, ACLs, etc.
+                memory_for_llm = {}
+                
+                # Always include content (even if None - frontend will handle)
+                memory_for_llm['content'] = content
+                
+                # Helper function to add field only if it exists and is not null/empty
+                def add_if_present(field_name, value=None):
+                    if value is None:
+                        value = getattr(mem, field_name, None)
+                    if value is not None:
+                        # Skip empty strings, empty lists, empty dicts
+                        if isinstance(value, str) and value.strip() == '':
+                            return
+                        if isinstance(value, (list, dict)) and len(value) == 0:
+                            return
+                        memory_for_llm[field_name] = value
+                
+                # Add user-facing fields (only if present and not empty)
+                add_if_present('context')
+                add_if_present('location')
+                add_if_present('hierarchical_structures')
+                add_if_present('source_url')
+                add_if_present('steps')
+                add_if_present('current_step')
+                add_if_present('category')
+                add_if_present('topics', topics)  # Already extracted above
+                add_if_present('tags', tags)  # Already extracted above
+                add_if_present('title')
+                add_if_present('page_number')
+                add_if_present('total_pages')
+                add_if_present('file_url')
+                add_if_present('page')
+                add_if_present('created_at')
+                add_if_present('updated_at')
+                add_if_present('customMetadata', custom_metadata)  # Already extracted above
+                
+                # Do NOT send to OpenAI: IDs, scores, tiers, types, internal metadata
+                # Keep these for internal logging only
+                
+                memories.append(memory_for_llm)
 
         processing_overhead_ms = ((time.perf_counter() - request_start) * 1000) - sdk_latency_ms
 
